@@ -1,26 +1,22 @@
 package com.lotto.domain.numberreceiver;
 
-import java.util.List;
+import lombok.AllArgsConstructor;
+
 import java.util.Set;
 
+@AllArgsConstructor
 public class NumberReceiverFacade {
     
-    public String inputNumbers(Set<Integer> userNumbers) {
-        List<Integer> filteredNumbers = filterAllNumbersInRange(userNumbers);
-        if (isQuantityOfNumbersCorrect(filteredNumbers)) {
-            return "success";
+    private final NumberValidator validator;
+    
+    public InputNumbersResultDto inputNumbers(Set<Integer> userNumbers) {
+        if (validator.filterAllNumbersInRange(userNumbers)) {
+            return InputNumbersResultDto.builder()
+                                        .message("success")
+                                        .build();
         }
-        return "failure";
-    }
-    
-    private List<Integer> filterAllNumbersInRange(final Set<Integer> userNumbers) {
-        return userNumbers.stream()
-                          .filter(number -> number >= 1)
-                          .filter(number -> number <= 99)
-                          .toList();
-    }
-    
-    private boolean isQuantityOfNumbersCorrect(final List<Integer> filteredNumbers) {
-        return filteredNumbers.size() == 6;
+        return InputNumbersResultDto.builder()
+                                    .message("failure")
+                                    .build();
     }
 }
