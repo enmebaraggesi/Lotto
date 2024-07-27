@@ -1,7 +1,10 @@
 package com.lotto.domain.numberreceiver;
 
+import com.lotto.domain.numberreceiver.dto.InputNumbersResultDto;
+import com.lotto.domain.numberreceiver.dto.TicketDto;
 import lombok.AllArgsConstructor;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -12,11 +15,12 @@ public class NumberReceiverFacade {
     
     private final NumberValidator validator;
     private final NumberReceiverRepository repository;
+    private Clock clock;
     
     public InputNumbersResultDto inputNumbers(Set<Integer> userNumbers) {
         if (validator.filterAllNumbersInRange(userNumbers)) {
             String id = UUID.randomUUID().toString();
-            LocalDateTime drawDate = LocalDateTime.now();
+            LocalDateTime drawDate = LocalDateTime.now(clock);
             Ticket ticket = repository.save(new Ticket(id, drawDate, userNumbers));
             return InputNumbersResultDto.builder()
                                         .message("success")

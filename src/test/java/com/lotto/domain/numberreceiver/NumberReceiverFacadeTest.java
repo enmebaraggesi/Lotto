@@ -1,8 +1,12 @@
 package com.lotto.domain.numberreceiver;
 
+import com.lotto.domain.numberreceiver.dto.InputNumbersResultDto;
+import com.lotto.domain.numberreceiver.dto.TicketDto;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Set;
 
@@ -10,17 +14,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class NumberReceiverFacadeTest {
     
+    AdjustableClock clock = new AdjustableClock(LocalDateTime.of(2024, 6, 15, 12, 0, 0).toInstant(ZoneOffset.UTC), ZoneId.of("UTC"));
+    
     NumberReceiverFacade facade = new NumberReceiverFacade(
             new NumberValidator(),
-            new InMemoryNumberReceiverRepositoryImpl()
+            new InMemoryNumberReceiverRepositoryImpl(),
+            clock
     );
+    
     
     @Test
     public void should_save_to_database_when_user_give_six_numbers() {
         //given
         Set<Integer> userNumbers = Set.of(1, 2, 3, 4, 5, 6);
         InputNumbersResultDto result = facade.inputNumbers(userNumbers);
-        LocalDateTime drawDate = LocalDateTime.now();
+        LocalDateTime drawDate = LocalDateTime.of(2024, 6, 15, 12, 0, 0);
         //when
         List<TicketDto> ticketDtos = facade.userNumbers(drawDate);
         //then
