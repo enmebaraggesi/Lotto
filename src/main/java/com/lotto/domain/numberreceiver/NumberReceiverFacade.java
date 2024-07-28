@@ -18,19 +18,18 @@ public class NumberReceiverFacade {
     private final IdGenerable idGenerator;
     
     public InputNumbersResultDto inputNumbers(Set<Integer> userNumbers) {
-        if (validator.filterAllNumbersInRange(userNumbers)) {
-            String id = idGenerator.generateId();
-            LocalDateTime drawDate = LocalDateTime.now(clock);
-            Ticket ticket = repository.save(new Ticket(id, drawDate, userNumbers));
-            return InputNumbersResultDto.builder()
-                                        .message("success")
-                                        .drawDate(ticket.drawDate)
-                                        .ticketId(ticket.id)
-                                        .build();
+        List<ValidationResult> validate = validator.validate(userNumbers);
+        if (!validate.isEmpty()) {
+            String message = validator.generateMessage();
+            return new InputNumbersResultDto(null, message);
         }
-        return InputNumbersResultDto.builder()
-                                    .message("failure")
-                                    .build();
+        String id = idGenerator.generateId();
+        LocalDateTime drawDate = LocalDateTime.now(clock);
+        
+        Ticket ticket = repository.save(new Ticket(id, drawDate, userNumbers));
+        
+        TicketDto ticketDto = TicketMapper.mapTicketToTicketDto(ticket);
+        return new InputNumbersResultDto(ticketDto, ValidationResult.SUCCESS.message);
     }
     
     public List<TicketDto> findAllTicketsByNextDrawDate(LocalDateTime date) {
