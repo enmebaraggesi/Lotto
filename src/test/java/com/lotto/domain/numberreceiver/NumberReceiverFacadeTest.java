@@ -15,23 +15,19 @@ class NumberReceiverFacadeTest {
     
     AdjustableClock clock = new AdjustableClock(LocalDateTime.of(2024, 1, 1, 1, 0, 0).toInstant(ZoneOffset.UTC), ZoneId.of("UTC"));
     
-    NumberReceiverFacade facade = new NumberReceiverFacade(
-            new NumberValidator(),
-            new InMemoryNumberReceiverRepositoryImpl(),
-            clock,
-            new IdGenerableImpl()
-    );
-    
     @Test
     public void should_save_to_database_when_user_give_six_numbers() {
         //given
+        IdGenerableImpl idGenerator = new IdGenerableImpl();
+        InMemoryNumberReceiverRepositoryImpl repository = new InMemoryNumberReceiverRepositoryImpl();
+        NumberReceiverFacade facade = new NumberRecieverConfig().forTests(repository, clock, idGenerator);
         Set<Integer> userNumbers = Set.of(1, 2, 3, 4, 5, 6);
         //when
         InputNumbersResultDto resultDto = facade.inputNumbers(userNumbers);
         //then
         assertThat(resultDto.ticket()).isNotNull();
         assertThat(resultDto.ticket()).isEqualTo(TicketDto.builder()
-                                                          .ticketId("ABCD")
+                                                          .ticketId(idGenerator.generateId())
                                                           .numbersFromUser(userNumbers)
                                                           .drawDate(LocalDateTime.of(2024, 1, 1, 1, 0, 0))
                                                           .build()
@@ -43,6 +39,9 @@ class NumberReceiverFacadeTest {
     @Test
     public void should_return_fail_when_user_give_less_than_six_numbers() {
         //given
+        IdGenerableImpl idGenerator = new IdGenerableImpl();
+        InMemoryNumberReceiverRepositoryImpl repository = new InMemoryNumberReceiverRepositoryImpl();
+        NumberReceiverFacade facade = new NumberRecieverConfig().forTests(repository, clock, idGenerator);
         Set<Integer> userNumbers = Set.of(1, 2, 3, 4, 5);
         //when
         InputNumbersResultDto resultDto = facade.inputNumbers(userNumbers);
@@ -54,6 +53,9 @@ class NumberReceiverFacadeTest {
     @Test
     public void should_return_fail_when_user_give_more_than_six_numbers() {
         //given
+        IdGenerableImpl idGenerator = new IdGenerableImpl();
+        InMemoryNumberReceiverRepositoryImpl repository = new InMemoryNumberReceiverRepositoryImpl();
+        NumberReceiverFacade facade = new NumberRecieverConfig().forTests(repository, clock, idGenerator);
         Set<Integer> userNumbers = Set.of(1, 2, 3, 4, 5, 6, 7);
         //when
         InputNumbersResultDto resultDto = facade.inputNumbers(userNumbers);
@@ -65,6 +67,9 @@ class NumberReceiverFacadeTest {
     @Test
     public void should_return_fail_when_user_give_at_least_one_number_out_of_range() {
         //given
+        IdGenerableImpl idGenerator = new IdGenerableImpl();
+        InMemoryNumberReceiverRepositoryImpl repository = new InMemoryNumberReceiverRepositoryImpl();
+        NumberReceiverFacade facade = new NumberRecieverConfig().forTests(repository, clock, idGenerator);
         Set<Integer> userNumbers = Set.of(1, 200, 3, 4, 5, 6);
         //when
         InputNumbersResultDto resultDto = facade.inputNumbers(userNumbers);
@@ -76,6 +81,9 @@ class NumberReceiverFacadeTest {
     @Test
     public void should_return_fail_when_user_give_at_least_one_negative_number() {
         //given
+        IdGenerableImpl idGenerator = new IdGenerableImpl();
+        InMemoryNumberReceiverRepositoryImpl repository = new InMemoryNumberReceiverRepositoryImpl();
+        NumberReceiverFacade facade = new NumberRecieverConfig().forTests(repository, clock, idGenerator);
         Set<Integer> userNumbers = Set.of(1, 2, -3, 4, 5, 6);
         //when
         InputNumbersResultDto resultDto = facade.inputNumbers(userNumbers);

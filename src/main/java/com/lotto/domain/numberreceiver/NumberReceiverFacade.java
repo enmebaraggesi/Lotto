@@ -13,7 +13,7 @@ import java.util.Set;
 public class NumberReceiverFacade {
     
     private final NumberValidator validator;
-    private final NumberReceiverRepository repository;
+    private final TicketRepository repository;
     private final Clock clock;
     private final IdGenerable idGenerator;
     
