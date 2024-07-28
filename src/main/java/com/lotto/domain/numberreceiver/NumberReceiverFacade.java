@@ -4,7 +4,6 @@ import com.lotto.domain.numberreceiver.dto.InputNumbersResultDto;
 import com.lotto.domain.numberreceiver.dto.TicketDto;
 import lombok.AllArgsConstructor;
 
-import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -14,7 +13,7 @@ public class NumberReceiverFacade {
     
     private final NumberValidator validator;
     private final TicketRepository repository;
-    private final Clock clock;
+    private final DrawDateGenerator drawDateGenerator;
     private final IdGenerable idGenerator;
     
     public InputNumbersResultDto inputNumbers(Set<Integer> userNumbers) {
@@ -24,7 +23,7 @@ public class NumberReceiverFacade {
             return new InputNumbersResultDto(null, message);
         }
         String id = idGenerator.generateId();
-        LocalDateTime drawDate = LocalDateTime.now(clock);
+        LocalDateTime drawDate = drawDateGenerator.getNextDrawDate();
         
         Ticket ticket = repository.save(new Ticket(id, drawDate, userNumbers));
         

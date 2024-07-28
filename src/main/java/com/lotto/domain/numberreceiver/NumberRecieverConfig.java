@@ -8,6 +8,7 @@ public class NumberRecieverConfig {
                                   final Clock clock,
                                   final IdGenerable idGenerator) {
         NumberValidator validator = new NumberValidator();
-        return new NumberReceiverFacade(validator, repository, clock, idGenerator);
+        DrawDateGenerator drawDateGenerator = new DrawDateGenerator(clock);
+        return new NumberReceiverFacade(validator, repository, drawDateGenerator, idGenerator);
     }
 }
