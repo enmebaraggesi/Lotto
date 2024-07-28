@@ -14,23 +14,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class NumberReceiverFacadeTest {
     
-    AdjustableClock clock = new AdjustableClock(LocalDateTime.of(2024, 6, 15, 12, 0, 0).toInstant(ZoneOffset.UTC), ZoneId.of("UTC"));
+    AdjustableClock clock = new AdjustableClock(LocalDateTime.of(2024, 1, 1, 1, 0, 0).toInstant(ZoneOffset.UTC), ZoneId.of("UTC"));
     
     NumberReceiverFacade facade = new NumberReceiverFacade(
             new NumberValidator(),
             new InMemoryNumberReceiverRepositoryImpl(),
-            clock
+            clock,
+            new IdGenerableImpl()
     );
-    
     
     @Test
     public void should_save_to_database_when_user_give_six_numbers() {
         //given
         Set<Integer> userNumbers = Set.of(1, 2, 3, 4, 5, 6);
         InputNumbersResultDto result = facade.inputNumbers(userNumbers);
-        LocalDateTime drawDate = LocalDateTime.of(2024, 6, 15, 12, 0, 0);
+        LocalDateTime drawDate = LocalDateTime.of(2024, 1, 1, 1, 0, 0);
         //when
-        List<TicketDto> ticketDtos = facade.userNumbers(drawDate);
+        List<TicketDto> ticketDtos = facade.findAllTicketsByNextDrawDate(drawDate);
         //then
         assertThat(ticketDtos).contains(
                 TicketDto.builder()

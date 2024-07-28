@@ -8,18 +8,18 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 @AllArgsConstructor
 public class NumberReceiverFacade {
     
     private final NumberValidator validator;
     private final NumberReceiverRepository repository;
-    private Clock clock;
+    private final Clock clock;
+    private final IdGenerable idGenerator;
     
     public InputNumbersResultDto inputNumbers(Set<Integer> userNumbers) {
         if (validator.filterAllNumbersInRange(userNumbers)) {
-            String id = UUID.randomUUID().toString();
+            String id = idGenerator.generateId();
             LocalDateTime drawDate = LocalDateTime.now(clock);
             Ticket ticket = repository.save(new Ticket(id, drawDate, userNumbers));
             return InputNumbersResultDto.builder()
@@ -33,7 +33,7 @@ public class NumberReceiverFacade {
                                     .build();
     }
     
-    public List<TicketDto> userNumbers(LocalDateTime date) {
+    public List<TicketDto> findAllTicketsByNextDrawDate(LocalDateTime date) {
         List<Ticket> tickets = repository.findAllTicketsByDrawDate(date);
         return tickets.stream()
                       .map(TicketMapper::mapTicketToTicketDto)

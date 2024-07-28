@@ -6,16 +6,12 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 
-public class AdjustableClock extends Clock {
+class AdjustableClock extends Clock {
     
     private Clock fixedClock;
     
     public AdjustableClock(Instant fixedInstant, ZoneId zone) {
         fixedClock = Clock.fixed(fixedInstant, zone);
-    }
-    
-    public AdjustableClock(Instant fixedInstant) {
-        this(fixedInstant, ZoneOffset.UTC);
     }
     
     private AdjustableClock(Clock innerClock) {
