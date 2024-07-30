@@ -15,16 +15,14 @@ public class NumberGeneratorFacade {
     private final RandomNumberGenerable generator;
     private final WinningNumbersRepository repository;
     private final NumberReceiverFacade numberReceiverFacade;
+    private final GeneratedNumberValidator validator;
     
     public WinningNumbersDto generateWinningNumbers() {
-        Set<Integer> generatedNumbers = generator.generateWinningNumbers();
+        Set<Integer> generatedNumbers = generator.generateSixWinningNumbers();
+        validator.validateGeneratedNumbers(generatedNumbers);
         String id = UUID.randomUUID().toString();
         LocalDateTime drawDate = numberReceiverFacade.retrieveNextDrawDate();
-        WinningNumbers winningNumbers = WinningNumbers.builder()
-                                                      .id(id)
-                                                      .winningNumbers(generatedNumbers)
-                                                      .date(drawDate)
-                                                      .build();
+        WinningNumbers winningNumbers = new WinningNumbers(id, generatedNumbers, drawDate);
         repository.save(winningNumbers);
         return new WinningNumbersDto(generatedNumbers, drawDate);
     }

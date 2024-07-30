@@ -64,29 +64,38 @@ class NumberGeneratorFacadeTest {
     }
     
     @Test
+    public void it_should_throw_exception_when_values_arent_within_required_range() {
+        //given
+        RandomNumberGenerable generator = new WinningNumbersGeneratorTestImpl(Set.of(1, 2, 3, 4, 5, 100));
+        when(numberReceiverFacade.retrieveNextDrawDate()).thenReturn(LocalDateTime.now());
+        NumberGeneratorFacade facade = new NumberGeneratorConfig().forTest(generator, winningNumbersRepository, numberReceiverFacade);
+        //when
+        Exception caughtException = catchException(facade::generateWinningNumbers);
+        //then
+        assertThat(caughtException).isInstanceOf(IllegalStateException.class);
+        assertThat(caughtException.getMessage()).contains("Number out of range:");
+    }
+    
+    @Test
     public void it_should_return_winning_numbers_by_given_date() {
         //given
         LocalDateTime drawDate = LocalDateTime.of(2024, 1, 6, 12, 0, 0);
         RandomNumberGenerable generator = new WinningNumbersGeneratorTestImpl();
-        Set<Integer> generatedWinningNumbers = generator.generateWinningNumbers();
+        Set<Integer> generatedNumbers = generator.generateSixWinningNumbers();
         String id = UUID.randomUUID().toString();
-        WinningNumbers winningNumbers = WinningNumbers.builder()
-                                                      .id(id)
-                                                      .date(drawDate)
-                                                      .winningNumbers(generatedWinningNumbers)
-                                                      .build();
+        WinningNumbers winningNumbers = new WinningNumbers(id, generatedNumbers, drawDate);
         winningNumbersRepository.save(winningNumbers);
         when(numberReceiverFacade.retrieveNextDrawDate()).thenReturn(drawDate);
         NumberGeneratorFacade facade = new NumberGeneratorConfig().forTest(generator, winningNumbersRepository, numberReceiverFacade);
         //when
         WinningNumbersDto winningNumbersDto = facade.retrieveWinningNumberByDate(drawDate);
         //then
-        assertThat(winningNumbersDto.winningNumbers()).isEqualTo(generatedWinningNumbers);
+        assertThat(winningNumbersDto.winningNumbers()).isEqualTo(generatedNumbers);
         assertThat(winningNumbersDto.date()).isEqualTo(drawDate);
     }
     
     @Test
-    public void it_should_throw_an_exception_when_fail_to_retrieve_numbers_by_given_date() {
+    public void it_should_throw_exception_when_fail_to_retrieve_numbers_by_given_date() {
         //given
         RandomNumberGenerable generator = new WinningNumbersGeneratorTestImpl();
         LocalDateTime drawDate = LocalDateTime.of(2024, 1, 6, 12, 0, 0);
@@ -104,14 +113,14 @@ class NumberGeneratorFacadeTest {
         //given
         LocalDateTime drawDate = LocalDateTime.of(2024, 1, 6, 12, 0, 0);
         RandomNumberGenerable generator = new WinningNumbersGeneratorTestImpl();
-        Set<Integer> generatedNumbers = generator.generateWinningNumbers();
+        Set<Integer> generatedNumbers = generator.generateSixWinningNumbers();
         String id = UUID.randomUUID().toString();
         WinningNumbers winningNumbers = new WinningNumbers(id, generatedNumbers, drawDate);
         winningNumbersRepository.save(winningNumbers);
         when(numberReceiverFacade.retrieveNextDrawDate()).thenReturn(drawDate);
-        NumberGeneratorFacade numbersGenerator = new NumberGeneratorConfig().forTest(generator, winningNumbersRepository, numberReceiverFacade);
+        NumberGeneratorFacade facade = new NumberGeneratorConfig().forTest(generator, winningNumbersRepository, numberReceiverFacade);
         //when
-        boolean result = numbersGenerator.areWinningNumbersGeneratedByDate();
+        boolean result = facade.areWinningNumbersGeneratedByDate();
         //then
         assertTrue(result);
     }
