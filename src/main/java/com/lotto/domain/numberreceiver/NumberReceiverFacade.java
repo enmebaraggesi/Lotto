@@ -37,4 +37,8 @@ public class NumberReceiverFacade {
                       .map(TicketMapper::mapTicketToTicketDto)
                       .toList();
     }
+    
+    public LocalDateTime retrieveNextDrawDate() {
+        return drawDateGenerator.getNextDrawDate();
+    }
 }
