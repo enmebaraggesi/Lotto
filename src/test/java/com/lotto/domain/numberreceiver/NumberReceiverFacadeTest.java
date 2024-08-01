@@ -15,8 +15,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class NumberReceiverFacadeTest {
     
-    IdGenerableImpl idGenerator = new IdGenerableImpl();
-    TicketRepositoryImpl repository = new TicketRepositoryImpl();
+    IdGenerableTestImpl idGenerator = new IdGenerableTestImpl();
+    TicketRepositoryTestImpl repository = new TicketRepositoryTestImpl();
     Clock clock = Clock.systemUTC();
     
     @Test

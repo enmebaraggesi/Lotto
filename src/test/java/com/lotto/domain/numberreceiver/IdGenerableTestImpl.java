@@ -1,10 +1,10 @@
 package com.lotto.domain.numberreceiver;
 
-class IdGenerableImpl implements IdGenerable {
+class IdGenerableTestImpl implements IdGenerable {
     
     private final String id;
     
-    IdGenerableImpl() {
+    IdGenerableTestImpl() {
         this.id = "ABCD";
     }
     
