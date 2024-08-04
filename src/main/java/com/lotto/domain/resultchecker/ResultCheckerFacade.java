@@ -20,7 +20,7 @@ public class ResultCheckerFacade {
     private final PlayerLotsRepository repository;
     private final ResultCalculator calculator;
     
-    WinnersDto generateWinners() {
+    public WinnersDto generateWinners() {
         WinningNumbersDto winningNumbersDto = numGenFacade.generateWinningNumbers();
         Set<Integer> winningNumbers = winningNumbersDto.winningNumbers();
         LocalDateTime drawDate = winningNumbersDto.date();
@@ -44,7 +44,7 @@ public class ResultCheckerFacade {
                          .build();
     }
     
-    ResultDto findById(final String id) {
+    public ResultDto findById(final String id) {
         PlayerLot playerLot = repository.findById(id)
                                         .orElseThrow(() -> new RuntimeException("Not found"));
         return WinnersMapper.mapPlayerLotToResultDto(playerLot);
