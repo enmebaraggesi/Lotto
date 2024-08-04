@@ -17,16 +17,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class ResultCheckerFacadeTest {
+class TicketCheckerFacadeTest {
     
-    private final PlayerRepository playerRepository = new PlayerRepositoryTestImpl();
+    private final PlayerLotsRepository repository = new PlayerRepositoryTestImpl();
     private final NumberGeneratorFacade numberGeneratorFacade = mock(NumberGeneratorFacade.class);
     private final NumberReceiverFacade numberReceiverFacade = mock(NumberReceiverFacade.class);
     
     @Test
     public void it_should_generate_all_players_with_correct_message() {
         //given
-        LocalDateTime drawDate = LocalDateTime.of(2022, 12, 17, 12, 0, 0);
+        LocalDateTime drawDate = LocalDateTime.of(2024, 1, 6, 12, 0, 0);
         when(numberGeneratorFacade.generateWinningNumbers()).thenReturn(
                 new WinningNumbersDto(Set.of(1, 2, 3, 4, 5, 6), drawDate));
         when(numberReceiverFacade.findAllTicketsByNextDrawDate(drawDate)).thenReturn(
@@ -37,7 +37,7 @@ class ResultCheckerFacadeTest {
                                  .build(),
                         TicketDto.builder()
                                  .ticketId("002")
-                                 .numbersFromUser(Set.of(1, 2, 7, 8, 9, 10))
+                                 .numbersFromUser(Set.of(1, 2, 3, 8, 9, 10))
                                  .drawDate(drawDate)
                                  .build(),
                         TicketDto.builder()
@@ -46,7 +46,7 @@ class ResultCheckerFacadeTest {
                                  .drawDate(drawDate)
                                  .build())
         );
-        ResultCheckerFacade facade = new ResultCheckerConfiguration().createForTest(numberGeneratorFacade, numberReceiverFacade, playerRepository);
+        ResultCheckerFacade facade = new ResultCheckerConfiguration().createForTest(numberGeneratorFacade, numberReceiverFacade, repository);
         //when
         WinnersDto winnersDto = facade.generateWinners();
         //then
@@ -59,18 +59,18 @@ class ResultCheckerFacadeTest {
                                        .isWinner(true)
                                        .build();
         ResultDto resultDto1 = ResultDto.builder()
-                                        .id("001")
-                                        .numbers(Set.of(1, 2, 3, 4, 5, 6))
-                                        .hitNumbers(Set.of(1, 2, 3, 4, 5, 6))
+                                        .id("002")
+                                        .numbers(Set.of(1, 2, 3, 8, 9, 10))
+                                        .hitNumbers(Set.of(1, 2, 3))
                                         .drawDate(drawDate)
                                         .isWinner(true)
                                         .build();
         ResultDto resultDto2 = ResultDto.builder()
-                                        .id("001")
-                                        .numbers(Set.of(1, 2, 3, 4, 5, 6))
-                                        .hitNumbers(Set.of(1, 2, 3, 4, 5, 6))
+                                        .id("003")
+                                        .numbers(Set.of(7, 8, 9, 10, 11, 12))
+                                        .hitNumbers(Set.of())
                                         .drawDate(drawDate)
-                                        .isWinner(true)
+                                        .isWinner(false)
                                         .build();
         assertThat(results).contains(resultDto, resultDto1, resultDto2);
         String message = winnersDto.message();
@@ -82,7 +82,7 @@ class ResultCheckerFacadeTest {
     public void it_should_generate_fail_message_when_winningNumbers_equal_null() {
         //given
         when(numberGeneratorFacade.generateWinningNumbers()).thenReturn(new WinningNumbersDto(null, null));
-        ResultCheckerFacade facade = new ResultCheckerConfiguration().createForTest(numberGeneratorFacade, numberReceiverFacade, playerRepository);
+        ResultCheckerFacade facade = new ResultCheckerConfiguration().createForTest(numberGeneratorFacade, numberReceiverFacade, repository);
         //when
         WinnersDto winnersDto = facade.generateWinners();
         //then
@@ -95,7 +95,7 @@ class ResultCheckerFacadeTest {
     public void it_should_generate_fail_message_when_winningNumbers_is_empty() {
         //given
         when(numberGeneratorFacade.generateWinningNumbers()).thenReturn(new WinningNumbersDto(Collections.emptySet(), null));
-        ResultCheckerFacade facade = new ResultCheckerConfiguration().createForTest(numberGeneratorFacade, numberReceiverFacade, playerRepository);
+        ResultCheckerFacade facade = new ResultCheckerConfiguration().createForTest(numberGeneratorFacade, numberReceiverFacade, repository);
         //when
         WinnersDto winnersDto = facade.generateWinners();
         //then
@@ -107,12 +107,12 @@ class ResultCheckerFacadeTest {
     @Test
     public void it_should_generate_result_with_correct_credentials() {
         //given
-        LocalDateTime drawDate = LocalDateTime.of(2022, 12, 17, 12, 0, 0);
+        LocalDateTime drawDate = LocalDateTime.of(2024, 1, 6, 12, 0, 0);
         when(numberGeneratorFacade.generateWinningNumbers()).thenReturn(new WinningNumbersDto(Set.of(1, 2, 3, 4, 5, 6), drawDate));
-        String hash = "001";
+        String id = "001";
         when(numberReceiverFacade.findAllTicketsByNextDrawDate(drawDate)).thenReturn(
                 List.of(TicketDto.builder()
-                                 .ticketId(hash)
+                                 .ticketId(id)
                                  .numbersFromUser(Set.of(7, 8, 9, 10, 11, 12))
                                  .drawDate(drawDate)
                                  .build(),
@@ -127,13 +127,13 @@ class ResultCheckerFacadeTest {
                                  .drawDate(drawDate)
                                  .build())
         );
-        ResultCheckerFacade facade = new ResultCheckerConfiguration().createForTest(numberGeneratorFacade, numberReceiverFacade, playerRepository);
+        ResultCheckerFacade facade = new ResultCheckerConfiguration().createForTest(numberGeneratorFacade, numberReceiverFacade, repository);
         facade.generateWinners();
         //when
-        ResultDto resultDto = facade.findById(hash);
+        ResultDto resultDto = facade.findById(id);
         //then
         ResultDto expectedResult = ResultDto.builder()
-                                            .id(hash)
+                                            .id(id)
                                             .numbers(Set.of(7, 8, 9, 10, 11, 12))
                                             .hitNumbers(Set.of())
                                             .drawDate(drawDate)
