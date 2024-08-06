@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Optional;
 
 import static com.lotto.domain.resultannouncer.AnnouncementMessage.ALREADY_CHECKED;
@@ -18,6 +19,7 @@ import static com.lotto.domain.resultannouncer.AnnouncementMessage.WIN_MESSAGE;
 @AllArgsConstructor
 class ResultAnnouncerFacade {
     
+    private static final LocalTime RESULTS_ANNOUNCEMENT_TIME = LocalTime.of(12, 5);
     private final ResultCheckerFacade resultCheckerFacade;
     private final ResponseRepository responseRepository;
     private final Clock clock;
@@ -31,17 +33,21 @@ class ResultAnnouncerFacade {
         }
         ResultDto resultDto = resultCheckerFacade.findById(id);
         if (resultDto == null) {
-            return ResultAnnouncerResponseDto.builder()
-                                             .message(ID_DOES_NOT_EXIST_MESSAGE.message)
-                                             .build();
+            return new ResultAnnouncerResponseDto(null, ID_DOES_NOT_EXIST_MESSAGE.message);
         }
         Response response = responseRepository.save(ResultMapper.mapResultDtoToResponse(resultDto));
-        if (LocalDateTime.now(clock).isBefore(response.drawDate())) {
+        if (isBeforeDrawDate(response)) {
             return ResultMapper.mapToAnnouncementMessageDto(response, WAIT_MESSAGE.message);
         }
         if (response.isWinner()) {
             return ResultMapper.mapToAnnouncementMessageDto(response, WIN_MESSAGE.message);
         }
         return ResultMapper.mapToAnnouncementMessageDto(response, LOSE_MESSAGE.message);
+    }
+    
+    private boolean isBeforeDrawDate(final Response response) {
+        LocalDateTime now = LocalDateTime.now(clock);
+        LocalDateTime announcementDate = LocalDateTime.of(response.drawDate().toLocalDate(), RESULTS_ANNOUNCEMENT_TIME);
+        return now.isBefore(announcementDate);
     }
 }

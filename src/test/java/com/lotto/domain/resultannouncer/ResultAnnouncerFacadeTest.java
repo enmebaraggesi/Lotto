@@ -138,10 +138,9 @@ class ResultAnnouncerFacadeTest {
                                        .build();
         when(resultCheckerFacade.findById(id)).thenReturn(resultDto);
         ResultAnnouncerFacade facade = new ResultAnnouncerConfiguration().createForTest(resultCheckerFacade, responseRepository, Clock.systemUTC());
-        ResultAnnouncerResponseDto checkedResult = facade.checkResult(id);
-        String underTest = checkedResult.responseDto().id();
         //when
-        ResultAnnouncerResponseDto response = facade.checkResult(underTest);
+        facade.checkResult(id);
+        ResultAnnouncerResponseDto response = facade.checkResult(id);
         //then
         ResultAnnouncerResponseDto expected = new ResultAnnouncerResponseDto(response.responseDto(), ALREADY_CHECKED.message);
         assertThat(response).isEqualTo(expected);
