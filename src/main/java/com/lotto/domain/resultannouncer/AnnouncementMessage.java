@@ -1,7 +1,7 @@
 package com.lotto.domain.resultannouncer;
 
 enum AnnouncementMessage {
-    HASH_DOES_NOT_EXIST_MESSAGE("Given ticket does not exist"),
+    ID_DOES_NOT_EXIST_MESSAGE("Given ticket does not exist"),
     WAIT_MESSAGE("Results are being calculated, please come back later"),
     WIN_MESSAGE("Congratulations, you won!"),
     LOSE_MESSAGE("No luck, try again!"),
