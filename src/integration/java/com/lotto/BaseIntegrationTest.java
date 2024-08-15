@@ -33,7 +33,7 @@ public class BaseIntegrationTest {
     public ObjectMapper objectMapper;
     
     @Container
-    public static final MongoDBContainer MONGO_DB_CONTAINER = new MongoDBContainer(DockerImageName.parse("mongo:latest"));
+    public static final MongoDBContainer MONGO_DB_CONTAINER = new MongoDBContainer(DockerImageName.parse("mongo:4.0.10"));
     
     @RegisterExtension
     public static WireMockExtension wireMockServer = WireMockExtension.newInstance()
