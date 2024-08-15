@@ -85,9 +85,7 @@
             <version>${wiremock-jre8-standalone.version}</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
-
     <build>
         <plugins>
             <plugin>
@@ -96,5 +94,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

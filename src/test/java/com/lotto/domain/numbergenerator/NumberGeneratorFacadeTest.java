@@ -81,7 +81,7 @@ class NumberGeneratorFacadeTest {
         //given
         LocalDateTime drawDate = LocalDateTime.of(2024, 1, 6, 12, 0, 0);
         RandomNumberGenerable generator = new WinningNumbersGeneratorTestImpl();
-        Set<Integer> generatedNumbers = generator.generateSixWinningNumbers();
+        Set<Integer> generatedNumbers = generator.generateSixWinningNumbers().numbers();
         String id = UUID.randomUUID().toString();
         WinningNumbers winningNumbers = new WinningNumbers(id, generatedNumbers, drawDate);
         winningNumbersRepository.save(winningNumbers);
@@ -113,7 +113,7 @@ class NumberGeneratorFacadeTest {
         //given
         LocalDateTime drawDate = LocalDateTime.of(2024, 1, 6, 12, 0, 0);
         RandomNumberGenerable generator = new WinningNumbersGeneratorTestImpl();
-        Set<Integer> generatedNumbers = generator.generateSixWinningNumbers();
+        Set<Integer> generatedNumbers = generator.generateSixWinningNumbers().numbers();
         String id = UUID.randomUUID().toString();
         WinningNumbers winningNumbers = new WinningNumbers(id, generatedNumbers, drawDate);
         winningNumbersRepository.save(winningNumbers);

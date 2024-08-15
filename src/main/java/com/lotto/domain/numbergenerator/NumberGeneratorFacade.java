@@ -12,14 +12,14 @@ import java.util.UUID;
 @AllArgsConstructor
 public class NumberGeneratorFacade {
     
-    private final RandomNumberGenerable generator;
+    private final RandomNumberGenerable randomGenerator;
     private final WinningNumbersRepository repository;
     private final NumberReceiverFacade numberReceiverFacade;
-    private final GeneratedNumberValidator validator;
+    private final GeneratedNumberValidator numberValidator;
     
     public WinningNumbersDto generateWinningNumbers() {
-        Set<Integer> generatedNumbers = generator.generateSixWinningNumbers();
-        validator.validateGeneratedNumbers(generatedNumbers);
+        Set<Integer> generatedNumbers = randomGenerator.generateSixWinningNumbers().numbers();
+        numberValidator.validateGeneratedNumbers(generatedNumbers);
         String id = UUID.randomUUID().toString();
         LocalDateTime drawDate = numberReceiverFacade.retrieveNextDrawDate();
         WinningNumbers winningNumbers = new WinningNumbers(id, generatedNumbers, drawDate);

@@ -1,5 +1,7 @@
 package com.lotto.domain.numbergenerator;
 
+import com.lotto.domain.numbergenerator.dto.SixRandomNumbersDto;
+
 import java.security.SecureRandom;
 import java.util.HashSet;
 import java.util.Random;
@@ -13,14 +15,14 @@ class WinningNumbersGenerator implements RandomNumberGenerable {
     private static final int WINNING_NUMBERS_QUANTITY = 6;
     
     @Override
-    public Set<Integer> generateSixWinningNumbers() {
+    public SixRandomNumbersDto generateSixWinningNumbers() {
         Random random = new SecureRandom();
         Set<Integer> winningNumbers = new HashSet<>();
         while (isSizeLowerThanSix(winningNumbers)) {
             Integer generateNumber = generateNumberBetweenMinAndMax(random);
             winningNumbers.add(generateNumber);
         }
-        return winningNumbers;
+        return WinningNumbersMapper.mapToSixRandomNumbersDto(winningNumbers);
     }
     
     private static boolean isSizeLowerThanSix(final Set<Integer> winningNumbers) {
