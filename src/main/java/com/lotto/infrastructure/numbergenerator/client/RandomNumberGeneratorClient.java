@@ -16,13 +16,16 @@ import java.util.List;
 public class RandomNumberGeneratorClient implements RandomNumberGenerable {
     
     private final RestTemplate restTemplate;
+    private final String uri;
+    private final int port;
     
     @Override
     public SixRandomNumbersDto generateSixWinningNumbers() {
-        String url = UriComponentsBuilder.fromHttpUrl(getUrlForService("/api/v1.0/random"))
+        String urlForService = getUrlForService("/api/v1.0/random");
+        String url = UriComponentsBuilder.fromHttpUrl(urlForService)
                                          .queryParam("min", 1)
                                          .queryParam("max", 99)
-                                         .queryParam("count", 6)
+                                         .queryParam("count", 25)
                                          .toUriString();
         ResponseEntity<List<Integer>> response = restTemplate.exchange(url,
                                                                        HttpMethod.GET,
@@ -35,6 +38,6 @@ public class RandomNumberGeneratorClient implements RandomNumberGenerable {
     }
     
     private String getUrlForService(String service) {
-        return "http://ec2-3-120-147-150.eu-central-1.compute.amazonaws.com" + ":" + "9090" + service;
+        return uri + ":" + port + service;
     }
 }
