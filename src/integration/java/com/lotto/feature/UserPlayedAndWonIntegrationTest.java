@@ -3,7 +3,7 @@ package com.lotto.feature;
 import com.lotto.BaseIntegrationTest;
 import org.junit.jupiter.api.Test;
 
-class UserPlayedAndWonIntegrationTest extends BaseIntegrationTest {
+public class UserPlayedAndWonIntegrationTest extends BaseIntegrationTest {
     
     @Test
     public void should_user_play_and_win_and_system_should_generate_winners() {
