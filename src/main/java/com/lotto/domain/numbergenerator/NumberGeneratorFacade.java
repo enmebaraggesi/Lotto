@@ -25,8 +25,7 @@ public class NumberGeneratorFacade {
                                                        .numbers();
         numberValidator.validateGeneratedNumbers(generatedNumbers);
         String id = UUID.randomUUID().toString();
-//        LocalDateTime drawDate = numberReceiverFacade.retrieveNextDrawDate();
-        LocalDateTime drawDate = LocalDateTime.now();
+        LocalDateTime drawDate = numberReceiverFacade.retrieveNextDrawDate();
         WinningNumbers winningNumbers = new WinningNumbers(id, generatedNumbers, drawDate);
         repository.save(winningNumbers);
         return new WinningNumbersDto(generatedNumbers, drawDate);
