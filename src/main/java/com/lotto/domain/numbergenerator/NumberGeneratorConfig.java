@@ -6,6 +6,7 @@ public class NumberGeneratorConfig {
     
     NumberGeneratorFacade forTest(final RandomNumberGenerable generator, final WinningNumbersRepository winningNumbersRepository, final NumberReceiverFacade numberReceiverFacade) {
         GeneratedNumberValidator validator = new GeneratedNumberValidator();
-        return new NumberGeneratorFacade(generator, winningNumbersRepository, numberReceiverFacade, validator);
+        NumberGeneratorFacadeProperties properties = new NumberGeneratorFacadeProperties(1,99,6);
+        return new NumberGeneratorFacade(generator, winningNumbersRepository, numberReceiverFacade, validator, properties);
     }
 }

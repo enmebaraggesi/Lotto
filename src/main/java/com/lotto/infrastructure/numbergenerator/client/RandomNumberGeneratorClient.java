@@ -20,12 +20,12 @@ public class RandomNumberGeneratorClient implements RandomNumberGenerable {
     private final int port;
     
     @Override
-    public SixRandomNumbersDto generateSixWinningNumbers() {
+    public SixRandomNumbersDto generateSixWinningNumbers(int lowerBand, int upperBand, int count) {
         String urlForService = getUrlForService("/api/v1.0/random");
         String url = UriComponentsBuilder.fromHttpUrl(urlForService)
-                                         .queryParam("min", 1)
-                                         .queryParam("max", 99)
-                                         .queryParam("count", 25)
+                                         .queryParam("min", lowerBand)
+                                         .queryParam("max", upperBand)
+                                         .queryParam("count", count)
                                          .toUriString();
         ResponseEntity<List<Integer>> response = restTemplate.exchange(url,
                                                                        HttpMethod.GET,

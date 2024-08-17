@@ -16,9 +16,13 @@ public class NumberGeneratorFacade {
     private final WinningNumbersRepository repository;
     private final NumberReceiverFacade numberReceiverFacade;
     private final GeneratedNumberValidator numberValidator;
+    private final NumberGeneratorFacadeProperties properties;
     
     public WinningNumbersDto generateWinningNumbers() {
-        Set<Integer> generatedNumbers = randomGenerator.generateSixWinningNumbers().numbers();
+        Set<Integer> generatedNumbers = randomGenerator.generateSixWinningNumbers(properties.lowerBand(),
+                                                                                  properties.upperBand(),
+                                                                                  properties.count())
+                                                       .numbers();
         numberValidator.validateGeneratedNumbers(generatedNumbers);
         String id = UUID.randomUUID().toString();
         LocalDateTime drawDate = numberReceiverFacade.retrieveNextDrawDate();
