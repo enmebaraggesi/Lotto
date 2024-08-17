@@ -24,8 +24,7 @@ import java.util.stream.Collectors;
 public class RandomNumberGeneratorClient implements RandomNumberGenerable {
     
     private final RestTemplate restTemplate;
-    private final String uri;
-    private final int port;
+    private final RandomNumberGeneratorClientProperties properties;
     
     @Override
     public SixRandomNumbersDto generateSixWinningNumbers(int lowerBand, int upperBand, int count) {
@@ -49,7 +48,7 @@ public class RandomNumberGeneratorClient implements RandomNumberGenerable {
     }
     
     private ResponseEntity<List<Integer>> makeGetRequest(final int lowerBand, final int upperBand, final int count, final HttpEntity<HttpHeaders> httpEntity) {
-        String urlForService = getUrlForService("/api/v1.0/random");
+        String urlForService = getUrlForService();
         String url = UriComponentsBuilder.fromHttpUrl(urlForService)
                                          .queryParam("min", lowerBand)
                                          .queryParam("max", upperBand)
@@ -62,8 +61,8 @@ public class RandomNumberGeneratorClient implements RandomNumberGenerable {
                                      });
     }
     
-    private String getUrlForService(String service) {
-        return uri + ":" + port + service;
+    private String getUrlForService() {
+        return properties.uri() + ":" + properties.port() + properties.service();
     }
     
     private Set<Integer> getSixRandomDistinctNumbers(final ResponseEntity<List<Integer>> response) {
