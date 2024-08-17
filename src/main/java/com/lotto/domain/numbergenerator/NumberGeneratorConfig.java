@@ -11,7 +11,7 @@ import java.util.Optional;
 public class NumberGeneratorConfig {
     
     @Bean
-    WinningNumbersRepository repository() {
+    WinningNumbersRepository winningNumbersRepository() {
         return new WinningNumbersRepository() {
             @Override
             public WinningNumbers save(final WinningNumbers winningNumbers) {
@@ -31,18 +31,8 @@ public class NumberGeneratorConfig {
     }
     
     @Bean
-    NumberReceiverFacade numberReceiverFacade() {
-        return new NumberReceiverFacade(null, null, null, null);
-    }
-    
-    @Bean
     NumberGeneratorFacade numberGeneratorFacade(RandomNumberGenerable randomGenerator, WinningNumbersRepository repository, NumberReceiverFacade numberReceiverFacade, NumberGeneratorFacadeProperties properties) {
         GeneratedNumberValidator validator = new GeneratedNumberValidator();
         return new NumberGeneratorFacade(randomGenerator, repository, numberReceiverFacade, validator, properties);
-    }
-    
-    NumberGeneratorFacade forTest(final RandomNumberGenerable generator, final WinningNumbersRepository winningNumbersRepository, final NumberReceiverFacade numberReceiverFacade) {
-        NumberGeneratorFacadeProperties properties = new NumberGeneratorFacadeProperties(1, 99, 6);
-        return numberGeneratorFacade(generator, winningNumbersRepository, numberReceiverFacade, properties);
     }
 }

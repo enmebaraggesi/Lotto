@@ -5,8 +5,10 @@ import com.lotto.infrastructure.numbergenerator.client.RandomNumberGeneratorClie
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
+@EnableScheduling
 @EnableConfigurationProperties({NumberGeneratorFacadeProperties.class, RandomNumberGeneratorClientProperties.class})
 public class LottoSpringBootApplication {
     
