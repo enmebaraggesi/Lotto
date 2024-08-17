@@ -24,7 +24,7 @@ class NumberGeneratorFacadeTest {
     @Test
     public void it_should_return_set_of_required_size() {
         //given
-        RandomNumberGenerable generator = new WinningNumbersGenerator();
+        RandomNumberGenerable generator = new WinningNumbersGeneratorTestImpl();
         when(numberReceiverFacade.retrieveNextDrawDate()).thenReturn(LocalDateTime.now());
         NumberGeneratorFacade facade = new NumberGeneratorConfig().forTest(generator, winningNumbersRepository, numberReceiverFacade);
         //when
@@ -36,7 +36,7 @@ class NumberGeneratorFacadeTest {
     @Test
     public void it_should_return_set_of_required_size_within_required_range() {
         //given
-        RandomNumberGenerable generator = new WinningNumbersGenerator();
+        RandomNumberGenerable generator = new WinningNumbersGeneratorTestImpl();
         when(numberReceiverFacade.retrieveNextDrawDate()).thenReturn(LocalDateTime.now());
         NumberGeneratorFacade facade = new NumberGeneratorConfig().forTest(generator, winningNumbersRepository, numberReceiverFacade);
         //when
@@ -53,7 +53,7 @@ class NumberGeneratorFacadeTest {
     @Test
     public void it_should_return_collection_of_unique_values() {
         //given
-        RandomNumberGenerable generator = new WinningNumbersGenerator();
+        RandomNumberGenerable generator = new WinningNumbersGeneratorTestImpl();
         when(numberReceiverFacade.retrieveNextDrawDate()).thenReturn(LocalDateTime.now());
         NumberGeneratorFacade facade = new NumberGeneratorConfig().forTest(generator, winningNumbersRepository, numberReceiverFacade);
         //when
@@ -81,7 +81,7 @@ class NumberGeneratorFacadeTest {
         //given
         LocalDateTime drawDate = LocalDateTime.of(2024, 1, 6, 12, 0, 0);
         RandomNumberGenerable generator = new WinningNumbersGeneratorTestImpl();
-        Set<Integer> generatedNumbers = generator.generateSixWinningNumbers().numbers();
+        Set<Integer> generatedNumbers = generator.generateSixWinningNumbers(0,0,0).numbers();
         String id = UUID.randomUUID().toString();
         WinningNumbers winningNumbers = new WinningNumbers(id, generatedNumbers, drawDate);
         winningNumbersRepository.save(winningNumbers);
@@ -113,7 +113,7 @@ class NumberGeneratorFacadeTest {
         //given
         LocalDateTime drawDate = LocalDateTime.of(2024, 1, 6, 12, 0, 0);
         RandomNumberGenerable generator = new WinningNumbersGeneratorTestImpl();
-        Set<Integer> generatedNumbers = generator.generateSixWinningNumbers().numbers();
+        Set<Integer> generatedNumbers = generator.generateSixWinningNumbers(0,0,0).numbers();
         String id = UUID.randomUUID().toString();
         WinningNumbers winningNumbers = new WinningNumbers(id, generatedNumbers, drawDate);
         winningNumbersRepository.save(winningNumbers);

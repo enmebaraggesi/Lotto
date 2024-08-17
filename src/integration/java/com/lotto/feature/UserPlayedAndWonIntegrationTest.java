@@ -2,7 +2,8 @@ package com.lotto.feature;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.lotto.BaseIntegrationTest;
-import com.lotto.domain.numbergenerator.RandomNumberGenerable;
+import com.lotto.domain.numbergenerator.NumberGeneratorFacade;
+import com.lotto.domain.numbergenerator.dto.WinningNumbersDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,7 +11,7 @@ import org.springframework.http.HttpStatus;
 public class UserPlayedAndWonIntegrationTest extends BaseIntegrationTest {
     
     @Autowired
-    RandomNumberGenerable randomNumberGenerable;
+    NumberGeneratorFacade facade;
     
     @Test
     public void should_user_play_and_win_and_system_should_generate_winners() {
@@ -25,7 +26,8 @@ public class UserPlayedAndWonIntegrationTest extends BaseIntegrationTest {
                                                                      """.trim()
                                                            )));
         //when
-        randomNumberGenerable.generateSixWinningNumbers();
+        WinningNumbersDto winningNumbersDto = facade.generateWinningNumbers();
+        System.out.println(winningNumbersDto);
         //then
         //step 2: system fetched winning numbers for draw date: 19.11.2022 12:00
         //step 3: user made POST /inputNumbers with 6 numbers (1, 2, 3, 4, 5, 6) at 16-11-2022 10:00 and system returned OK(200) with message: “success” and Ticket (DrawDate:19.11.2022 12:00 (Saturday), TicketId: sampleTicketId)
