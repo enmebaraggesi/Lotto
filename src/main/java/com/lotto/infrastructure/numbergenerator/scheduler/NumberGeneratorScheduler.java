@@ -14,7 +14,7 @@ class NumberGeneratorScheduler {
     
     private final NumberGeneratorFacade facade;
     
-    @Scheduled(cron = "*/10 * * * * *")
+    @Scheduled(cron = "${lotto.number-generator.scheduler.lottery-run-occurrence}")
     public void generateWinningNumbers() {
         log.info("Number generator scheduler started");
         WinningNumbersDto dto = facade.generateWinningNumbers();
