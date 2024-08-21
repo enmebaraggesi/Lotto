@@ -1,13 +1,15 @@
 package com.lotto.domain.numbergenerator;
 
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
+
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-interface WinningNumbersRepository {
+@Repository
+interface WinningNumbersRepository extends MongoRepository<WinningNumbers, String> {
     
-    WinningNumbers save(WinningNumbers winningNumbers);
-    
-    Optional<WinningNumbers> findWinningNumberByDate(LocalDateTime drawDate);
+    Optional<WinningNumbers> findByDate(LocalDateTime drawDate);
     
     boolean existsByDate(LocalDateTime drawDate);
 }

@@ -14,10 +14,11 @@ class NumberGeneratorScheduler {
     
     private final NumberGeneratorFacade facade;
     
-    @Scheduled(cron = "${lotto.number-generator.scheduler.lottery-run-occurrence}")
+    @Scheduled(fixedDelayString = "${lotto.number-generator.scheduler.lottery-run-occurrence}", initialDelay = 1000)
     public void generateWinningNumbers() {
-        log.info("Number generator scheduler started");
+        log.info("SCHEDULER started");
         WinningNumbersDto dto = facade.generateWinningNumbers();
-        log.info(dto);
+        log.info("Numbers: {}", dto.winningNumbers());
+        log.info("Date: {}", dto.date());
     }
 }

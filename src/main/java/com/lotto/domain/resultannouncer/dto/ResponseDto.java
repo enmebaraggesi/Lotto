@@ -11,5 +11,5 @@ public record ResponseDto(String id,
                           Set<Integer> hitNumbers,
                           LocalDateTime drawDate,
                           boolean isWinner) {
-
+    
 }

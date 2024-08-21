@@ -27,14 +27,14 @@ public class NumberGeneratorFacade {
         String id = UUID.randomUUID().toString();
         LocalDateTime drawDate = numberReceiverFacade.retrieveNextDrawDate();
         WinningNumbers winningNumbers = new WinningNumbers(id, generatedNumbers, drawDate);
-        repository.save(winningNumbers);
-        return new WinningNumbersDto(generatedNumbers, drawDate);
+        WinningNumbers saved = repository.save(winningNumbers);
+        return new WinningNumbersDto(saved.winningNumbers(), saved.date());
     }
     
     public WinningNumbersDto retrieveWinningNumberByDate(final LocalDateTime drawDate) {
-        WinningNumbers winningNumberByDate = repository.findWinningNumberByDate(drawDate)
-                                                       .orElseThrow(() -> new WinningNumbersNotFoundException("Winning numbers not found"));
-        return WinningNumbersMapper.mapWinningNumbersToWinningNumbersDto(winningNumberByDate, drawDate);
+        WinningNumbers winningNumbersByDate = repository.findByDate(drawDate)
+                                                        .orElseThrow(() -> new WinningNumbersNotFoundException("Winning numbers not found"));
+        return WinningNumbersMapper.mapWinningNumbersToWinningNumbersDto(winningNumbersByDate, drawDate);
     }
     
     boolean areWinningNumbersGeneratedByDate() {

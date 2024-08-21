@@ -18,12 +18,12 @@ class ResultMapper {
     
     static ResultAnnouncerResponseDto mapToAnnouncementMessageDto(final Response response, final String message) {
         ResponseDto responseDto = ResponseDto.builder()
-                                       .id(response.id())
-                                       .numbers(response.numbers())
-                                       .hitNumbers(response.hitNumbers())
-                                       .drawDate(response.drawDate())
-                                       .isWinner(response.isWinner())
-                                       .build();
+                                             .id(response.id())
+                                             .numbers(response.numbers())
+                                             .hitNumbers(response.hitNumbers())
+                                             .drawDate(response.drawDate())
+                                             .isWinner(response.isWinner())
+                                             .build();
         return new ResultAnnouncerResponseDto(responseDto, message);
     }
 }

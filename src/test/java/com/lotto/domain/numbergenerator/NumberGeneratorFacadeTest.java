@@ -26,7 +26,7 @@ class NumberGeneratorFacadeTest {
         //given
         RandomNumberGenerable generator = new WinningNumbersGeneratorTestImpl();
         when(numberReceiverFacade.retrieveNextDrawDate()).thenReturn(LocalDateTime.now());
-        NumberGeneratorFacadeProperties properties = new NumberGeneratorFacadeProperties(1,99,6);
+        NumberGeneratorFacadeProperties properties = new NumberGeneratorFacadeProperties(1, 99, 6);
         NumberGeneratorFacade facade = new NumberGeneratorConfig().numberGeneratorFacade(generator, winningNumbersRepository, numberReceiverFacade, properties);
         //when
         WinningNumbersDto generatedNumbers = facade.generateWinningNumbers();
@@ -39,7 +39,7 @@ class NumberGeneratorFacadeTest {
         //given
         RandomNumberGenerable generator = new WinningNumbersGeneratorTestImpl();
         when(numberReceiverFacade.retrieveNextDrawDate()).thenReturn(LocalDateTime.now());
-        NumberGeneratorFacadeProperties properties = new NumberGeneratorFacadeProperties(1,99,6);
+        NumberGeneratorFacadeProperties properties = new NumberGeneratorFacadeProperties(1, 99, 6);
         NumberGeneratorFacade facade = new NumberGeneratorConfig().numberGeneratorFacade(generator, winningNumbersRepository, numberReceiverFacade, properties);
         //when
         WinningNumbersDto generatedNumbers = facade.generateWinningNumbers();
@@ -57,7 +57,7 @@ class NumberGeneratorFacadeTest {
         //given
         RandomNumberGenerable generator = new WinningNumbersGeneratorTestImpl();
         when(numberReceiverFacade.retrieveNextDrawDate()).thenReturn(LocalDateTime.now());
-        NumberGeneratorFacadeProperties properties = new NumberGeneratorFacadeProperties(1,99,6);
+        NumberGeneratorFacadeProperties properties = new NumberGeneratorFacadeProperties(1, 99, 6);
         NumberGeneratorFacade facade = new NumberGeneratorConfig().numberGeneratorFacade(generator, winningNumbersRepository, numberReceiverFacade, properties);
         //when
         WinningNumbersDto generatedNumbers = facade.generateWinningNumbers();
@@ -71,7 +71,7 @@ class NumberGeneratorFacadeTest {
         //given
         RandomNumberGenerable generator = new WinningNumbersGeneratorTestImpl(Set.of(1, 2, 3, 4, 5, 100));
         when(numberReceiverFacade.retrieveNextDrawDate()).thenReturn(LocalDateTime.now());
-        NumberGeneratorFacadeProperties properties = new NumberGeneratorFacadeProperties(1,99,6);
+        NumberGeneratorFacadeProperties properties = new NumberGeneratorFacadeProperties(1, 99, 6);
         NumberGeneratorFacade facade = new NumberGeneratorConfig().numberGeneratorFacade(generator, winningNumbersRepository, numberReceiverFacade, properties);
         //when
         Exception caughtException = catchException(facade::generateWinningNumbers);
@@ -85,12 +85,12 @@ class NumberGeneratorFacadeTest {
         //given
         LocalDateTime drawDate = LocalDateTime.of(2024, 1, 6, 12, 0, 0);
         RandomNumberGenerable generator = new WinningNumbersGeneratorTestImpl();
-        Set<Integer> generatedNumbers = generator.generateSixWinningNumbers(0,0,0).numbers();
+        Set<Integer> generatedNumbers = generator.generateSixWinningNumbers(0, 0, 0).numbers();
         String id = UUID.randomUUID().toString();
         WinningNumbers winningNumbers = new WinningNumbers(id, generatedNumbers, drawDate);
         winningNumbersRepository.save(winningNumbers);
         when(numberReceiverFacade.retrieveNextDrawDate()).thenReturn(drawDate);
-        NumberGeneratorFacadeProperties properties = new NumberGeneratorFacadeProperties(1,99,6);
+        NumberGeneratorFacadeProperties properties = new NumberGeneratorFacadeProperties(1, 99, 6);
         NumberGeneratorFacade facade = new NumberGeneratorConfig().numberGeneratorFacade(generator, winningNumbersRepository, numberReceiverFacade, properties);
         //when
         WinningNumbersDto winningNumbersDto = facade.retrieveWinningNumberByDate(drawDate);
@@ -105,7 +105,7 @@ class NumberGeneratorFacadeTest {
         RandomNumberGenerable generator = new WinningNumbersGeneratorTestImpl();
         LocalDateTime drawDate = LocalDateTime.of(2024, 1, 6, 12, 0, 0);
         when(numberReceiverFacade.retrieveNextDrawDate()).thenReturn(drawDate);
-        NumberGeneratorFacadeProperties properties = new NumberGeneratorFacadeProperties(1,99,6);
+        NumberGeneratorFacadeProperties properties = new NumberGeneratorFacadeProperties(1, 99, 6);
         NumberGeneratorFacade facade = new NumberGeneratorConfig().numberGeneratorFacade(generator, winningNumbersRepository, numberReceiverFacade, properties);
         //when
         Exception catchException = catchException(() -> facade.retrieveWinningNumberByDate(drawDate));
@@ -119,12 +119,12 @@ class NumberGeneratorFacadeTest {
         //given
         LocalDateTime drawDate = LocalDateTime.of(2024, 1, 6, 12, 0, 0);
         RandomNumberGenerable generator = new WinningNumbersGeneratorTestImpl();
-        Set<Integer> generatedNumbers = generator.generateSixWinningNumbers(0,0,0).numbers();
+        Set<Integer> generatedNumbers = generator.generateSixWinningNumbers(0, 0, 0).numbers();
         String id = UUID.randomUUID().toString();
         WinningNumbers winningNumbers = new WinningNumbers(id, generatedNumbers, drawDate);
         winningNumbersRepository.save(winningNumbers);
         when(numberReceiverFacade.retrieveNextDrawDate()).thenReturn(drawDate);
-        NumberGeneratorFacadeProperties properties = new NumberGeneratorFacadeProperties(1,99,6);
+        NumberGeneratorFacadeProperties properties = new NumberGeneratorFacadeProperties(1, 99, 6);
         NumberGeneratorFacade facade = new NumberGeneratorConfig().numberGeneratorFacade(generator, winningNumbersRepository, numberReceiverFacade, properties);
         //when
         boolean result = facade.areWinningNumbersGeneratedByDate();
