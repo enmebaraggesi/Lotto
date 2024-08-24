@@ -8,12 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-import java.time.DayOfWeek;
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.temporal.TemporalAdjusters;
 
 import static org.awaitility.Awaitility.await;
 
@@ -34,15 +30,15 @@ public class UserPlayedAndWonIntegrationTest extends BaseIntegrationTest {
                                                                      [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]
                                                                      """.trim()
                                                            )));
-        //step 2: system fetched winning numbers for draw date: 19.11.2022 12:00
+        //step 2: system fetched winning numbers for draw date: 17.08.2024 12:00
         //given
-        LocalDateTime nextSaturday = LocalDateTime.of(LocalDate.now().with(TemporalAdjusters.next(DayOfWeek.SATURDAY)), LocalTime.of(12, 0, 0));
+        LocalDateTime drawDate = LocalDateTime.of(2024, 8, 17, 12, 0, 0);
         //when & then
         await().atMost(Duration.ofSeconds(20))
                .pollInterval(Duration.ofSeconds(1))
                .until(() -> {
                           try {
-                              return !facade.retrieveWinningNumberByDate(nextSaturday)
+                              return !facade.retrieveWinningNumberByDate(drawDate)
                                             .winningNumbers()
                                             .isEmpty();
                           } catch (WinningNumbersNotFoundException e) {
