@@ -26,7 +26,7 @@ public class BaseIntegrationTest {
     public static final String WIREMOCK_HOST = "http://localhost";
     
     @Autowired
-    public MockMvc mvc;
+    public MockMvc mockMvc;
     
     @Autowired
     public ObjectMapper objectMapper;

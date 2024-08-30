@@ -4,8 +4,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.time.Clock;
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Configuration
 public class NumberRecieverConfig {
@@ -18,21 +16,6 @@ public class NumberRecieverConfig {
     @Bean
     IdGenerable idGenerable() {
         return new IdGenerator();
-    }
-    
-    @Bean
-    TicketRepository ticketRepository() {
-        return new TicketRepository() {
-            @Override
-            public Ticket save(final Ticket ticket) {
-                return null;
-            }
-            
-            @Override
-            public List<Ticket> findAllTicketsByDrawDate(final LocalDateTime date) {
-                return List.of();
-            }
-        };
     }
     
     @Bean
