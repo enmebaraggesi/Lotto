@@ -17,14 +17,14 @@ import static com.lotto.domain.resultannouncer.AnnouncementMessage.WAIT_MESSAGE;
 import static com.lotto.domain.resultannouncer.AnnouncementMessage.WIN_MESSAGE;
 
 @AllArgsConstructor
-class ResultAnnouncerFacade {
+public class ResultAnnouncerFacade {
     
     private static final LocalTime RESULTS_ANNOUNCEMENT_TIME = LocalTime.of(12, 5);
     private final ResultCheckerFacade resultCheckerFacade;
     private final ResponseRepository responseRepository;
     private final Clock clock;
     
-    ResultAnnouncerResponseDto checkResult(final String id) {
+    public ResultAnnouncerResponseDto checkResult(final String id) {
         if (responseRepository.existsById(id)) {
             Optional<Response> cachedResponse = responseRepository.findById(id);
             if (cachedResponse.isPresent()) {

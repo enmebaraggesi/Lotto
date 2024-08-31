@@ -31,7 +31,7 @@ class ResultAnnouncerFacadeTest {
         //given
         LocalDateTime drawDate = LocalDateTime.of(2022, 12, 17, 12, 0, 0);
         String id = "123";
-        ResultAnnouncerFacade facade = new ResultAnnouncerConfiguration().createForTest(resultCheckerFacade, responseRepository, Clock.systemUTC());
+        ResultAnnouncerFacade facade = new ResultAnnouncerConfiguration().resultAnnouncerFacade(resultCheckerFacade, responseRepository, Clock.systemUTC());
         ResultDto resultDto = ResultDto.builder()
                                        .id(id)
                                        .numbers(Set.of(1, 2, 3, 4, 5, 6))
@@ -59,7 +59,7 @@ class ResultAnnouncerFacadeTest {
         //given
         LocalDateTime drawDate = LocalDateTime.of(2022, 12, 17, 12, 0, 0);
         String id = "123";
-        ResultAnnouncerFacade facade = new ResultAnnouncerConfiguration().createForTest(resultCheckerFacade, responseRepository, Clock.systemUTC());
+        ResultAnnouncerFacade facade = new ResultAnnouncerConfiguration().resultAnnouncerFacade(resultCheckerFacade, responseRepository, Clock.systemUTC());
         ResultDto resultDto = ResultDto.builder()
                                        .id(id)
                                        .numbers(Set.of(1, 2, 3, 4, 5, 6))
@@ -88,7 +88,7 @@ class ResultAnnouncerFacadeTest {
         LocalDateTime drawDate = LocalDateTime.of(2022, 12, 31, 12, 0, 0);
         String id = "123";
         Clock clock = Clock.fixed(LocalDateTime.of(2022, 12, 17, 12, 0, 0).toInstant(ZoneOffset.UTC), ZoneId.systemDefault());
-        ResultAnnouncerFacade facade = new ResultAnnouncerConfiguration().createForTest(resultCheckerFacade, responseRepository, clock);
+        ResultAnnouncerFacade facade = new ResultAnnouncerConfiguration().resultAnnouncerFacade(resultCheckerFacade, responseRepository, clock);
         ResultDto resultDto = ResultDto.builder()
                                        .id(id)
                                        .numbers(Set.of(1, 2, 3, 4, 5, 6))
@@ -115,7 +115,7 @@ class ResultAnnouncerFacadeTest {
     public void it_should_return_response_with_id_does_not_exist_message_if_id_does_not_exist() {
         //given
         String id = "123";
-        ResultAnnouncerFacade facade = new ResultAnnouncerConfiguration().createForTest(resultCheckerFacade, responseRepository, Clock.systemUTC());
+        ResultAnnouncerFacade facade = new ResultAnnouncerConfiguration().resultAnnouncerFacade(resultCheckerFacade, responseRepository, Clock.systemUTC());
         when(resultCheckerFacade.findById(id)).thenReturn(null);
         //when
         ResultAnnouncerResponseDto response = facade.checkResult(id);
@@ -137,7 +137,7 @@ class ResultAnnouncerFacadeTest {
                                        .isWinner(true)
                                        .build();
         when(resultCheckerFacade.findById(id)).thenReturn(resultDto);
-        ResultAnnouncerFacade facade = new ResultAnnouncerConfiguration().createForTest(resultCheckerFacade, responseRepository, Clock.systemUTC());
+        ResultAnnouncerFacade facade = new ResultAnnouncerConfiguration().resultAnnouncerFacade(resultCheckerFacade, responseRepository, Clock.systemUTC());
         //when
         facade.checkResult(id);
         ResultAnnouncerResponseDto response = facade.checkResult(id);
