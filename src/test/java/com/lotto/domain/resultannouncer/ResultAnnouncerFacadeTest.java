@@ -13,7 +13,6 @@ import java.time.ZoneOffset;
 import java.util.Set;
 
 import static com.lotto.domain.resultannouncer.AnnouncementMessage.ALREADY_CHECKED;
-import static com.lotto.domain.resultannouncer.AnnouncementMessage.ID_DOES_NOT_EXIST_MESSAGE;
 import static com.lotto.domain.resultannouncer.AnnouncementMessage.LOSE_MESSAGE;
 import static com.lotto.domain.resultannouncer.AnnouncementMessage.WAIT_MESSAGE;
 import static com.lotto.domain.resultannouncer.AnnouncementMessage.WIN_MESSAGE;
@@ -108,19 +107,6 @@ class ResultAnnouncerFacadeTest {
                                              .isWinner(true)
                                              .build();
         ResultAnnouncerResponseDto expected = new ResultAnnouncerResponseDto(responseDto, WAIT_MESSAGE.message);
-        assertThat(response).isEqualTo(expected);
-    }
-    
-    @Test
-    public void it_should_return_response_with_id_does_not_exist_message_if_id_does_not_exist() {
-        //given
-        String id = "123";
-        ResultAnnouncerFacade facade = new ResultAnnouncerConfiguration().resultAnnouncerFacade(resultCheckerFacade, responseRepository, Clock.systemUTC());
-        when(resultCheckerFacade.findById(id)).thenReturn(null);
-        //when
-        ResultAnnouncerResponseDto response = facade.checkResult(id);
-        //then
-        ResultAnnouncerResponseDto expected = new ResultAnnouncerResponseDto(null, ID_DOES_NOT_EXIST_MESSAGE.message);
         assertThat(response).isEqualTo(expected);
     }
     

@@ -23,8 +23,16 @@ class PlayerRepositoryTestImpl implements PlayerLotsRepository {
     }
     
     @Override
+    public <S extends PlayerLot> List<S> saveAll(final Iterable<S> entities) {
+        entities.forEach(playerLot -> {
+            inMemoryDatabase.put(playerLot.id(), playerLot);
+        });
+        return List.of(entities.iterator().next());
+    }
+    
+    @Override
     public Optional<PlayerLot> findById(final String id) {
-        return Optional.of(inMemoryDatabase.get(id));
+        return Optional.ofNullable(inMemoryDatabase.get(id));
     }
     
     @Override
@@ -75,11 +83,6 @@ class PlayerRepositoryTestImpl implements PlayerLotsRepository {
     @Override
     public <S extends PlayerLot, R> R findBy(final Example<S> example, final Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
         return null;
-    }
-    
-    @Override
-    public <S extends PlayerLot> List<S> saveAll(final Iterable<S> entities) {
-        return List.of();
     }
     
     @Override
