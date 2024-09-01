@@ -67,7 +67,7 @@ public class UserPlayedAndWonIntegrationTest extends BaseIntegrationTest {
                                                                                   {
                                                                                   "inputNumbers": [1,2,3,4,5,6]
                                                                                   }
-                                                                                  """)
+                                                                                  """.trim())
                                                                          .contentType(MediaType.APPLICATION_JSON)
         );
         //then
@@ -89,7 +89,7 @@ public class UserPlayedAndWonIntegrationTest extends BaseIntegrationTest {
         performGetResultWithNotExistingId.andExpect(status().isNotFound())
                                          .andExpect(content().json("""
                                                                    {
-                                                                       "message": "Given ticket does not exist",
+                                                                       "message": "Given ID: notExistingId does not exist",
                                                                        "status": "NOT_FOUND"
                                                                    }
                                                                    """.trim()

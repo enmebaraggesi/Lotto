@@ -11,7 +11,6 @@ import java.time.LocalTime;
 import java.util.Optional;
 
 import static com.lotto.domain.resultannouncer.AnnouncementMessage.ALREADY_CHECKED;
-import static com.lotto.domain.resultannouncer.AnnouncementMessage.ID_DOES_NOT_EXIST_MESSAGE;
 import static com.lotto.domain.resultannouncer.AnnouncementMessage.LOSE_MESSAGE;
 import static com.lotto.domain.resultannouncer.AnnouncementMessage.WAIT_MESSAGE;
 import static com.lotto.domain.resultannouncer.AnnouncementMessage.WIN_MESSAGE;
@@ -32,9 +31,6 @@ public class ResultAnnouncerFacade {
             }
         }
         ResultDto resultDto = resultCheckerFacade.findById(id);
-        if (resultDto == null) {
-            return new ResultAnnouncerResponseDto(null, ID_DOES_NOT_EXIST_MESSAGE.message);
-        }
         Response response = responseRepository.save(ResultMapper.mapResultDtoToResponse(resultDto));
         if (isBeforeDrawDate(response)) {
             return ResultMapper.mapToAnnouncementMessageDto(response, WAIT_MESSAGE.message);
