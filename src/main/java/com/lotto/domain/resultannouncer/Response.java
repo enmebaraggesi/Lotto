@@ -1,15 +1,19 @@
 package com.lotto.domain.resultannouncer;
 
 import lombok.Builder;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 import java.util.Set;
 
 @Builder
-record Response(String id,
-                Set<Integer> numbers,
-                Set<Integer> hitNumbers,
-                LocalDateTime drawDate,
-                boolean isWinner) {
+@Document
+record Response(
+        @Id String id,
+        Set<Integer> numbers,
+        Set<Integer> hitNumbers,
+        LocalDateTime drawDate,
+        boolean isWinner) {
     
 }

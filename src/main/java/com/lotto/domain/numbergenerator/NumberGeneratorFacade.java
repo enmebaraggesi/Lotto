@@ -37,7 +37,7 @@ public class NumberGeneratorFacade {
         return WinningNumbersMapper.mapWinningNumbersToWinningNumbersDto(winningNumbersByDate, drawDate);
     }
     
-    boolean areWinningNumbersGeneratedByDate() {
+    public boolean areWinningNumbersGeneratedByDate() {
         LocalDateTime drawDate = numberReceiverFacade.retrieveNextDrawDate();
         return repository.existsByDate(drawDate);
     }

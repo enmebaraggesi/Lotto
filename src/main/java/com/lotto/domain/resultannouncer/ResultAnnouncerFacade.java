@@ -18,7 +18,7 @@ import static com.lotto.domain.resultannouncer.AnnouncementMessage.WIN_MESSAGE;
 @AllArgsConstructor
 public class ResultAnnouncerFacade {
     
-    private static final LocalTime RESULTS_ANNOUNCEMENT_TIME = LocalTime.of(12, 5);
+    private static final LocalTime RESULTS_ANNOUNCEMENT_TIME = LocalTime.of(12, 1);
     private final ResultCheckerFacade resultCheckerFacade;
     private final ResponseRepository responseRepository;
     private final Clock clock;

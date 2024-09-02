@@ -37,7 +37,7 @@ public class ResultCheckerFacade {
                                          .map(WinnersMapper::mapTicketDtoToTicket)
                                          .toList();
         List<PlayerLot> playerLots = calculator.retrieveWinners(tickets, winningNumbers);
-        repository.saveAll(playerLots);
+        playerLots.forEach(repository::save);
         List<ResultDto> resultDtos = playerLots.stream()
                                                .map(WinnersMapper::mapPlayerLotToResultDto)
                                                .toList();

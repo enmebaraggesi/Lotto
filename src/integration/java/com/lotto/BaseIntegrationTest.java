@@ -31,6 +31,9 @@ public class BaseIntegrationTest {
     @Autowired
     public ObjectMapper objectMapper;
     
+    @Autowired
+    public AdjustableClock clock;
+    
     @Container
     public static final MongoDBContainer MONGO_DB_CONTAINER = new MongoDBContainer(DockerImageName.parse("mongo:4.0.10"));
     

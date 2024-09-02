@@ -5,6 +5,10 @@ import com.lotto.BaseIntegrationTest;
 import com.lotto.domain.numbergenerator.NumberGeneratorFacade;
 import com.lotto.domain.numbergenerator.error.WinningNumbersNotFoundException;
 import com.lotto.domain.numberreceiver.dto.InputNumbersResultDto;
+import com.lotto.domain.resultannouncer.dto.ResultAnnouncerResponseDto;
+import com.lotto.domain.resultchecker.ResultCheckerFacade;
+import com.lotto.domain.resultchecker.dto.ResultDto;
+import com.lotto.domain.resultchecker.error.ResultNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +18,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
@@ -26,7 +31,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class UserPlayedAndWonIntegrationTest extends BaseIntegrationTest {
     
     @Autowired
-    NumberGeneratorFacade facade;
+    NumberGeneratorFacade numberGeneratorFacade;
+    
+    @Autowired
+    ResultCheckerFacade resultCheckerFacade;
     
     @Test
     public void should_user_play_and_win_and_system_should_generate_winners() throws Exception {
@@ -42,7 +50,7 @@ public class UserPlayedAndWonIntegrationTest extends BaseIntegrationTest {
                                                            )));
         
         
-        //step 2: system fetched winning numbers for draw date: 17.08.2024 12:00
+        //step 2: it is 16.08.2024 and system fetched winning numbers for draw date: 17.08.2024 12:00
         //given
         LocalDateTime drawDate = LocalDateTime.of(2024, 8, 17, 12, 0, 0);
         //when & then
@@ -50,9 +58,9 @@ public class UserPlayedAndWonIntegrationTest extends BaseIntegrationTest {
                .pollInterval(Duration.ofSeconds(1))
                .until(() -> {
                           try {
-                              return !facade.retrieveWinningNumberByDate(drawDate)
-                                            .winningNumbers()
-                                            .isEmpty();
+                              return !numberGeneratorFacade.retrieveWinningNumberByDate(drawDate)
+                                                           .winningNumbers()
+                                                           .isEmpty();
                           } catch (WinningNumbersNotFoundException e) {
                               return false;
                           }
@@ -60,30 +68,30 @@ public class UserPlayedAndWonIntegrationTest extends BaseIntegrationTest {
                );
         
         
-        //step 3: user made POST /inputNumbers with 6 numbers (1, 2, 3, 4, 5, 6) at 16-11-2022 10:00 and system returned OK(200) with message: “success” and Ticket (DrawDate:19.11.2022 12:00 (Saturday), TicketId: sampleTicketId)
+        //step 3: user made POST /inputNumbers with 6 numbers (1, 2, 3, 4, 5, 6) on 16-08-2022 12:00 and system returned OK(200) with success and ticket with draw date on 17.08.2024 12:00
         //given & when
-        ResultActions performPostInpustNumbers = mockMvc.perform(post("/inputNumbers")
-                                                                         .content("""
-                                                                                  {
-                                                                                  "inputNumbers": [1,2,3,4,5,6]
-                                                                                  }
-                                                                                  """.trim())
-                                                                         .contentType(MediaType.APPLICATION_JSON)
+        ResultActions performPostInputNumbers = mockMvc.perform(post("/inputNumbers")
+                                                                        .content("""
+                                                                                 {
+                                                                                 "inputNumbers": [1,2,3,4,5,6]
+                                                                                 }
+                                                                                 """.trim())
+                                                                        .contentType(MediaType.APPLICATION_JSON)
         );
         //then
-        MvcResult result = performPostInpustNumbers.andExpect(status().isOk()).andReturn();
+        MvcResult result = performPostInputNumbers.andExpect(status().isOk()).andReturn();
         String json = result.getResponse().getContentAsString();
         InputNumbersResultDto inputNumbersResultDto = objectMapper.readValue(json, InputNumbersResultDto.class);
+        String postedTicketId = inputNumbersResultDto.ticket().ticketId();
         assertAll(
                 () -> assertThat(inputNumbersResultDto.ticket().drawDate()).isEqualTo(drawDate),
-                () -> assertThat(inputNumbersResultDto.ticket().ticketId()).isNotNull(),
+                () -> assertThat(postedTicketId).isNotNull(),
                 () -> assertThat(inputNumbersResultDto.message()).isEqualTo("Success")
         );
         
         
         //step 4: user made GET /results/notExistingId and system returned 404(NOT_FOUND) and body {message: Not found for id: notExistingId, status: NOT_FOUND}
-        //given
-        //when
+        //given & when
         ResultActions performGetResultWithNotExistingId = mockMvc.perform(get("/results/notExistingId"));
         //then
         performGetResultWithNotExistingId.andExpect(status().isNotFound())
@@ -96,9 +104,43 @@ public class UserPlayedAndWonIntegrationTest extends BaseIntegrationTest {
                                          ));
         
         
-        //step 5: 3 days and 1 minute passed, and it is 1 minute after the draw date (19.11.2022 12:01)
-        //step 6: system generated result for TicketId: sampleTicketId with draw date 19.11.2022 12:00, and saved it with 6 hits
-        //step 7: 3 hours passed, and it is 1 minute after announcement time (19.11.2022 15:01)
-        //step 8: user made GET /results/sampleTicketId and system returned 200 (OK)
+        //step 5: it's 5 minutes before draw date (17.08.2024 11:55)
+        //given & when & then
+        clock.setClockToLocalDateTime(LocalDateTime.of(2024, 8, 17, 11, 55, 0));
+        
+        
+        //step 6: system generated result for Ticket with draw date 19.11.2022 12:00, and saved it with 6 hits
+        //given & when & then
+        await().atMost(20, TimeUnit.SECONDS)
+               .pollInterval(Duration.ofSeconds(1))
+               .until(
+                       () -> {
+                           try {
+                               ResultDto resultDto = resultCheckerFacade.findById(postedTicketId);
+                               return !resultDto.numbers().isEmpty();
+                           } catch (ResultNotFoundException e) {
+                               return false;
+                           }
+                       }
+               );
+        
+        
+        //step 7: 6 minutes passed, and it is 1 minute after draw time (17.08.2024 12:01)
+        //given & when & then
+        clock.plusMinutes(6);
+        
+        
+        //step 8: user made GET /results/postedTicketId and system returned 200 (OK)
+        //given & when
+        ResultActions performGetResultWithExistingId = mockMvc.perform(get("/results/" + postedTicketId));
+        //then
+        MvcResult getResultWithExistingIdResult = performGetResultWithExistingId.andExpect(status().isOk()).andReturn();
+        String getResultWithExistingIdJson = getResultWithExistingIdResult.getResponse().getContentAsString();
+        ResultAnnouncerResponseDto resultDto = objectMapper.readValue(getResultWithExistingIdJson, ResultAnnouncerResponseDto.class);
+        assertAll(
+                () -> assertThat(resultDto.message()).isEqualTo("Congratulations, you won!"),
+                () -> assertThat(resultDto.responseDto().id()).isEqualTo(postedTicketId),
+                () -> assertThat(resultDto.responseDto().hitNumbers()).hasSize(6)
+        );
     }
 }
