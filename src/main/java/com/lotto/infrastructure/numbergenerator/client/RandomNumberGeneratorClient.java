@@ -8,12 +8,13 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -43,7 +44,7 @@ public class RandomNumberGeneratorClient implements RandomNumberGenerable {
                                       .build();
         } catch (ResourceAccessException e) {
             log.error("Error while generating six winning numbers", e);
-            return SixRandomNumbersDto.builder().build();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     
@@ -69,7 +70,7 @@ public class RandomNumberGeneratorClient implements RandomNumberGenerable {
         List<Integer> numbers = response.getBody();
         if (numbers == null) {
             log.error("Response body did not contain any numbers");
-            return Collections.emptySet();
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT);
         }
         log.info("Response body contained {}", numbers);
         Set<Integer> distinctNumbers = new HashSet<>(numbers);

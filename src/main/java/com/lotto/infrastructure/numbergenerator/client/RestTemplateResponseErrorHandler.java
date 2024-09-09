@@ -11,7 +11,7 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
-class RestTemplateResponseErrorHandler extends DefaultResponseErrorHandler {
+public class RestTemplateResponseErrorHandler extends DefaultResponseErrorHandler {
     
     @Override
     public void handleError(ClientHttpResponse response) throws IOException {

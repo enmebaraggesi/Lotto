@@ -11,7 +11,7 @@ import java.time.Duration;
 
 @Configuration
 @AllArgsConstructor
-class RandomNumberGeneratorClientConfig {
+public class RandomNumberGeneratorClientConfig {
     
     @Bean
     public RestTemplateResponseErrorHandler restTemplateResponseErrorHandler() {
