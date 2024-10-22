@@ -11,20 +11,19 @@ import java.time.LocalTime;
 import java.util.Optional;
 
 import static com.lotto.domain.resultannouncer.AnnouncementMessage.ALREADY_CHECKED;
-import static com.lotto.domain.resultannouncer.AnnouncementMessage.ID_DOES_NOT_EXIST_MESSAGE;
 import static com.lotto.domain.resultannouncer.AnnouncementMessage.LOSE_MESSAGE;
 import static com.lotto.domain.resultannouncer.AnnouncementMessage.WAIT_MESSAGE;
 import static com.lotto.domain.resultannouncer.AnnouncementMessage.WIN_MESSAGE;
 
 @AllArgsConstructor
-class ResultAnnouncerFacade {
+public class ResultAnnouncerFacade {
     
-    private static final LocalTime RESULTS_ANNOUNCEMENT_TIME = LocalTime.of(12, 5);
+    private static final LocalTime RESULTS_ANNOUNCEMENT_TIME = LocalTime.of(12, 1);
     private final ResultCheckerFacade resultCheckerFacade;
     private final ResponseRepository responseRepository;
     private final Clock clock;
     
-    ResultAnnouncerResponseDto checkResult(final String id) {
+    public ResultAnnouncerResponseDto checkResult(final String id) {
         if (responseRepository.existsById(id)) {
             Optional<Response> cachedResponse = responseRepository.findById(id);
             if (cachedResponse.isPresent()) {
@@ -32,9 +31,6 @@ class ResultAnnouncerFacade {
             }
         }
         ResultDto resultDto = resultCheckerFacade.findById(id);
-        if (resultDto == null) {
-            return new ResultAnnouncerResponseDto(null, ID_DOES_NOT_EXIST_MESSAGE.message);
-        }
         Response response = responseRepository.save(ResultMapper.mapResultDtoToResponse(resultDto));
         if (isBeforeDrawDate(response)) {
             return ResultMapper.mapToAnnouncementMessageDto(response, WAIT_MESSAGE.message);

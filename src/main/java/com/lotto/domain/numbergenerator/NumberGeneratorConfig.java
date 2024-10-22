@@ -1,11 +1,15 @@
 package com.lotto.domain.numbergenerator;
 
 import com.lotto.domain.numberreceiver.NumberReceiverFacade;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
+@Configuration
 public class NumberGeneratorConfig {
     
-    NumberGeneratorFacade forTest(final RandomNumberGenerable generator, final WinningNumbersRepository winningNumbersRepository, final NumberReceiverFacade numberReceiverFacade) {
+    @Bean
+    NumberGeneratorFacade numberGeneratorFacade(RandomNumberGenerable randomGenerator, WinningNumbersRepository repository, NumberReceiverFacade numberReceiverFacade, NumberGeneratorFacadeProperties properties) {
         GeneratedNumberValidator validator = new GeneratedNumberValidator();
-        return new NumberGeneratorFacade(generator, winningNumbersRepository, numberReceiverFacade, validator);
+        return new NumberGeneratorFacade(randomGenerator, repository, numberReceiverFacade, validator, properties);
     }
 }

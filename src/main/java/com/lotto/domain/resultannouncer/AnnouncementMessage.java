@@ -1,7 +1,7 @@
 package com.lotto.domain.resultannouncer;
 
-enum AnnouncementMessage {
-    ID_DOES_NOT_EXIST_MESSAGE("Given ticket does not exist"),
+public enum AnnouncementMessage {
+    ID_DOES_NOT_EXIST_MESSAGE("Given ID: %s does not exist"),
     WAIT_MESSAGE("Results are being calculated, please come back later"),
     WIN_MESSAGE("Congratulations, you won!"),
     LOSE_MESSAGE("No luck, try again!"),
@@ -11,5 +11,9 @@ enum AnnouncementMessage {
     
     AnnouncementMessage(final String message) {
         this.message = message;
+    }
+    
+    public String format(String string) {
+        return String.format(this.message, string);
     }
 }

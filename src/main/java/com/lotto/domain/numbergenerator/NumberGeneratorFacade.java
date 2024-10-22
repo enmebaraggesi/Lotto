@@ -12,28 +12,32 @@ import java.util.UUID;
 @AllArgsConstructor
 public class NumberGeneratorFacade {
     
-    private final RandomNumberGenerable generator;
+    private final RandomNumberGenerable randomGenerator;
     private final WinningNumbersRepository repository;
     private final NumberReceiverFacade numberReceiverFacade;
-    private final GeneratedNumberValidator validator;
+    private final GeneratedNumberValidator numberValidator;
+    private final NumberGeneratorFacadeProperties properties;
     
     public WinningNumbersDto generateWinningNumbers() {
-        Set<Integer> generatedNumbers = generator.generateSixWinningNumbers();
-        validator.validateGeneratedNumbers(generatedNumbers);
+        Set<Integer> generatedNumbers = randomGenerator.generateSixWinningNumbers(properties.lowerBand(),
+                                                                                  properties.upperBand(),
+                                                                                  properties.count())
+                                                       .numbers();
+        numberValidator.validateGeneratedNumbers(generatedNumbers);
         String id = UUID.randomUUID().toString();
         LocalDateTime drawDate = numberReceiverFacade.retrieveNextDrawDate();
         WinningNumbers winningNumbers = new WinningNumbers(id, generatedNumbers, drawDate);
-        repository.save(winningNumbers);
-        return new WinningNumbersDto(generatedNumbers, drawDate);
+        WinningNumbers saved = repository.save(winningNumbers);
+        return new WinningNumbersDto(saved.winningNumbers(), saved.date());
     }
     
     public WinningNumbersDto retrieveWinningNumberByDate(final LocalDateTime drawDate) {
-        WinningNumbers winningNumberByDate = repository.findWinningNumberByDate(drawDate)
-                                                       .orElseThrow(() -> new WinningNumbersNotFoundException("Winning numbers not found"));
-        return WinningNumbersMapper.mapWinningNumbersToWinningNumbersDto(winningNumberByDate, drawDate);
+        WinningNumbers winningNumbersByDate = repository.findByDate(drawDate)
+                                                        .orElseThrow(() -> new WinningNumbersNotFoundException("Winning numbers not found"));
+        return WinningNumbersMapper.mapWinningNumbersToWinningNumbersDto(winningNumbersByDate, drawDate);
     }
     
-    boolean areWinningNumbersGeneratedByDate() {
+    public boolean areWinningNumbersGeneratedByDate() {
         LocalDateTime drawDate = numberReceiverFacade.retrieveNextDrawDate();
         return repository.existsByDate(drawDate);
     }

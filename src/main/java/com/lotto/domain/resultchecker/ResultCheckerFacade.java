@@ -6,11 +6,14 @@ import com.lotto.domain.numberreceiver.NumberReceiverFacade;
 import com.lotto.domain.numberreceiver.dto.TicketDto;
 import com.lotto.domain.resultchecker.dto.ResultDto;
 import com.lotto.domain.resultchecker.dto.WinnersDto;
+import com.lotto.domain.resultchecker.error.ResultNotFoundException;
 import lombok.AllArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
+
+import static com.lotto.domain.resultannouncer.AnnouncementMessage.ID_DOES_NOT_EXIST_MESSAGE;
 
 @AllArgsConstructor
 public class ResultCheckerFacade {
@@ -46,7 +49,7 @@ public class ResultCheckerFacade {
     
     public ResultDto findById(final String id) {
         PlayerLot playerLot = repository.findById(id)
-                                        .orElseThrow(() -> new RuntimeException("Not found"));
+                                        .orElseThrow(() -> new ResultNotFoundException(ID_DOES_NOT_EXIST_MESSAGE.format(id)));
         return WinnersMapper.mapPlayerLotToResultDto(playerLot);
     }
 }

@@ -10,11 +10,11 @@ class ResultCalculator {
     
     List<PlayerLot> retrieveWinners(List<Ticket> tickets, Set<Integer> winningNumbers) {
         return tickets.stream()
-                               .map(ticket -> {
-                                   Set<Integer> hitNumbers = calculateHits(winningNumbers, ticket);
-                                   return buildPlayerLot(ticket, hitNumbers);
-                               })
-                               .toList();
+                      .map(ticket -> {
+                          Set<Integer> hitNumbers = calculateHits(winningNumbers, ticket);
+                          return buildPlayerLot(ticket, hitNumbers);
+                      })
+                      .toList();
     }
     
     private Set<Integer> calculateHits(Set<Integer> winningNumbers, Ticket ticket) {

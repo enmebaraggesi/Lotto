@@ -12,7 +12,7 @@ import java.util.Set;
 public class NumberReceiverFacade {
     
     private final NumberValidator validator;
-    private final TicketRepository repository;
+    private final TicketRepository ticketRepository;
     private final DrawDateGenerator drawDateGenerator;
     private final IdGenerable idGenerator;
     
@@ -22,17 +22,18 @@ public class NumberReceiverFacade {
             String message = validator.generateMessage();
             return new InputNumbersResultDto(null, message);
         }
-        String id = idGenerator.generateId();
+//        String id = idGenerator.generateId();
         LocalDateTime drawDate = drawDateGenerator.getNextDrawDate();
-        
-        Ticket ticket = repository.save(new Ticket(id, drawDate, userNumbers));
-        
+        Ticket ticket = ticketRepository.save(Ticket.builder()
+                                                    .userNumbers(userNumbers)
+                                                    .drawDate(drawDate)
+                                                    .build());
         TicketDto ticketDto = TicketMapper.mapTicketToTicketDto(ticket);
         return new InputNumbersResultDto(ticketDto, ValidationResult.SUCCESS.message);
     }
     
     public List<TicketDto> findAllTicketsByNextDrawDate(LocalDateTime date) {
-        List<Ticket> tickets = repository.findAllTicketsByDrawDate(date);
+        List<Ticket> tickets = ticketRepository.findAllTicketsByDrawDate(date);
         return tickets.stream()
                       .map(TicketMapper::mapTicketToTicketDto)
                       .toList();

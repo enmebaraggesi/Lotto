@@ -2,10 +2,11 @@ package com.lotto.domain.numbergenerator;
 
 import java.util.Set;
 
-import static com.lotto.domain.numbergenerator.WinningNumbersGenerator.MAX_ADMISSIBLE_NUMBER;
-import static com.lotto.domain.numbergenerator.WinningNumbersGenerator.MIN_ADMISSIBLE_NUMBER;
 
 class GeneratedNumberValidator {
+    
+    private final static int MIN_ADMISSIBLE_NUMBER = 1;
+    private final static int MAX_ADMISSIBLE_NUMBER = 99;
     
     public void validateGeneratedNumbers(final Set<Integer> numbers) {
         boolean allMatch = numbers.stream()

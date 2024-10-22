@@ -1,10 +1,11 @@
 package com.lotto.domain.resultchecker;
 
+import org.springframework.data.mongodb.repository.MongoRepository;
+
 import java.util.Optional;
 
-interface PlayerLotsRepository {
+interface PlayerLotsRepository extends MongoRepository<PlayerLot, String> {
     
-    PlayerLot save(PlayerLot playerLot);
-    
+    @Override
     Optional<PlayerLot> findById(String id);
 }
