@@ -2,6 +2,7 @@ package com.lotto;
 
 import com.lotto.domain.numbergenerator.NumberGeneratorFacadeProperties;
 import com.lotto.infrastructure.numbergenerator.client.RandomNumberGeneratorClientProperties;
+import com.lotto.infrastructure.security.jwtauthenticatior.JwtConfigurationProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -11,7 +12,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableMongoRepositories
 @EnableScheduling
-@EnableConfigurationProperties({NumberGeneratorFacadeProperties.class, RandomNumberGeneratorClientProperties.class})
+@EnableConfigurationProperties({NumberGeneratorFacadeProperties.class, RandomNumberGeneratorClientProperties.class, JwtConfigurationProperties.class})
 public class LottoSpringBootApplication {
     
     public static void main(String[] args) {
