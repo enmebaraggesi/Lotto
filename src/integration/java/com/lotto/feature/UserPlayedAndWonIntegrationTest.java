@@ -23,10 +23,8 @@ import java.util.concurrent.TimeUnit;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 public class UserPlayedAndWonIntegrationTest extends BaseIntegrationTest {
     
@@ -38,7 +36,7 @@ public class UserPlayedAndWonIntegrationTest extends BaseIntegrationTest {
     
     @Test
     public void should_user_play_and_win_and_system_should_generate_winners() throws Exception {
-        //step 1: external service returns 6 random numbers (1,2,3,4,5,6)
+        //step 1: external service returns 25 random numbers (1 to 25)
         //given & when & then
         wireMockServer.stubFor(WireMock.get("/api/v1.0/random?min=1&max=99&count=25")
                                        .willReturn(WireMock.aResponse()
@@ -54,7 +52,7 @@ public class UserPlayedAndWonIntegrationTest extends BaseIntegrationTest {
         //given
         LocalDateTime drawDate = LocalDateTime.of(2024, 8, 17, 12, 0, 0);
         //when & then
-        await().atMost(Duration.ofSeconds(20))
+        await().atMost(Duration.ofSeconds(10))
                .pollInterval(Duration.ofSeconds(1))
                .until(() -> {
                           try {
@@ -111,7 +109,7 @@ public class UserPlayedAndWonIntegrationTest extends BaseIntegrationTest {
         
         //step 6: system generated result for Ticket with draw date 19.11.2022 12:00, and saved it with 6 hits
         //given & when & then
-        await().atMost(20, TimeUnit.SECONDS)
+        await().atMost(10, TimeUnit.SECONDS)
                .pollInterval(Duration.ofSeconds(1))
                .until(
                        () -> {

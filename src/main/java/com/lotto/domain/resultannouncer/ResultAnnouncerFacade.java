@@ -1,5 +1,7 @@
 package com.lotto.domain.resultannouncer;
 
+import com.lotto.domain.numberreceiver.NumberReceiverFacade;
+import com.lotto.domain.numberreceiver.dto.TicketDto;
 import com.lotto.domain.resultannouncer.dto.ResultAnnouncerResponseDto;
 import com.lotto.domain.resultchecker.ResultCheckerFacade;
 import com.lotto.domain.resultchecker.dto.ResultDto;
@@ -20,6 +22,7 @@ public class ResultAnnouncerFacade {
     
     private static final LocalTime RESULTS_ANNOUNCEMENT_TIME = LocalTime.of(12, 1);
     private final ResultCheckerFacade resultCheckerFacade;
+    private final NumberReceiverFacade numberReceiverFacade;
     private final ResponseRepository responseRepository;
     private final Clock clock;
     
@@ -30,20 +33,21 @@ public class ResultAnnouncerFacade {
                 return ResultMapper.mapToAnnouncementMessageDto(cachedResponse.get(), ALREADY_CHECKED.message);
             }
         }
+        TicketDto ticketDto = numberReceiverFacade.findById(id);
+        if (isBeforeDrawDate(ticketDto)) {
+            return ResultMapper.mapToAnnouncementMessageDto(Response.builder().build(), WAIT_MESSAGE.message);
+        }
         ResultDto resultDto = resultCheckerFacade.findById(id);
         Response response = responseRepository.save(ResultMapper.mapResultDtoToResponse(resultDto));
-        if (isBeforeDrawDate(response)) {
-            return ResultMapper.mapToAnnouncementMessageDto(response, WAIT_MESSAGE.message);
-        }
         if (response.isWinner()) {
             return ResultMapper.mapToAnnouncementMessageDto(response, WIN_MESSAGE.message);
         }
         return ResultMapper.mapToAnnouncementMessageDto(response, LOSE_MESSAGE.message);
     }
     
-    private boolean isBeforeDrawDate(final Response response) {
+    private boolean isBeforeDrawDate(final TicketDto ticketDto) {
         LocalDateTime now = LocalDateTime.now(clock);
-        LocalDateTime announcementDate = LocalDateTime.of(response.drawDate().toLocalDate(), RESULTS_ANNOUNCEMENT_TIME);
+        LocalDateTime announcementDate = LocalDateTime.of(ticketDto.drawDate().toLocalDate(), RESULTS_ANNOUNCEMENT_TIME);
         return now.isBefore(announcementDate);
     }
 }

@@ -2,6 +2,7 @@ package com.lotto.domain.numberreceiver;
 
 import com.lotto.domain.numberreceiver.dto.InputNumbersResultDto;
 import com.lotto.domain.numberreceiver.dto.TicketDto;
+import com.lotto.domain.resultchecker.error.ResultNotFoundException;
 import lombok.AllArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -39,5 +40,11 @@ public class NumberReceiverFacade {
     
     public LocalDateTime retrieveNextDrawDate() {
         return drawDateGenerator.getNextDrawDate();
+    }
+    
+    public TicketDto findById(String id) {
+        return ticketRepository.findById(id)
+                               .map(TicketMapper::mapTicketToTicketDto)
+                               .orElseThrow(() -> new ResultNotFoundException("Given ID: " + id + " does not exist"));
     }
 }

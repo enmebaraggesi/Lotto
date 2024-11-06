@@ -43,9 +43,11 @@ public class BaseIntegrationTest {
                                                                       .build();
     
     @DynamicPropertySource
-    public static void mongoProperties(DynamicPropertyRegistry registry) {
+    public static void updateProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.data.mongodb.uri", MONGO_DB_CONTAINER::getReplicaSetUrl);
         registry.add("lotto.number-generator.http.client.uri", () -> WIREMOCK_HOST);
         registry.add("lotto.number-generator.http.client.port", () -> wireMockServer.getPort());
+        registry.add("lotto.number-generator.scheduler.lottery-run-occurrence", () -> "*/5 * * * * *");
+        registry.add("lotto.result-checker.scheduler.lottery-run-occurrence", () -> "*/7 * * * * *");
     }
 }
