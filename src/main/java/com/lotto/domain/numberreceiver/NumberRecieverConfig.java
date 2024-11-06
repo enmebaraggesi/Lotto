@@ -14,14 +14,9 @@ public class NumberRecieverConfig {
     }
     
     @Bean
-    IdGenerable idGenerable() {
-        return new IdGenerator();
-    }
-    
-    @Bean
-    NumberReceiverFacade numberReceiverFacade(TicketRepository repository, Clock clock, IdGenerable idGenerator) {
+    NumberReceiverFacade numberReceiverFacade(TicketRepository repository, Clock clock) {
         NumberValidator validator = new NumberValidator();
         DrawDateGenerator drawDateGenerator = new DrawDateGenerator(clock);
-        return new NumberReceiverFacade(validator, repository, drawDateGenerator, idGenerator);
+        return new NumberReceiverFacade(validator, repository, drawDateGenerator);
     }
 }

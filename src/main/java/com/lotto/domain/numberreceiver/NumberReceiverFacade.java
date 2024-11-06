@@ -14,7 +14,6 @@ public class NumberReceiverFacade {
     private final NumberValidator validator;
     private final TicketRepository ticketRepository;
     private final DrawDateGenerator drawDateGenerator;
-    private final IdGenerable idGenerator;
     
     public InputNumbersResultDto inputNumbers(Set<Integer> userNumbers) {
         List<ValidationResult> validate = validator.validate(userNumbers);
@@ -22,7 +21,6 @@ public class NumberReceiverFacade {
             String message = validator.generateMessage();
             return new InputNumbersResultDto(null, message);
         }
-//        String id = idGenerator.generateId();
         LocalDateTime drawDate = drawDateGenerator.getNextDrawDate();
         Ticket ticket = ticketRepository.save(Ticket.builder()
                                                     .userNumbers(userNumbers)
