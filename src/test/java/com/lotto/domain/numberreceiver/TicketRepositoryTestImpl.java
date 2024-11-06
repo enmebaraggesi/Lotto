@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
@@ -19,8 +20,14 @@ class TicketRepositoryTestImpl implements TicketRepository {
     
     @Override
     public Ticket save(final Ticket ticket) {
-        inMemoryDatabase.put(ticket.id(), ticket);
-        return ticket;
+        String id = UUID.randomUUID().toString();
+        Ticket toSave = Ticket.builder()
+                             .id(id)
+                             .userNumbers(ticket.userNumbers())
+                             .drawDate(ticket.drawDate())
+                             .build();
+        inMemoryDatabase.put(id, toSave);
+        return toSave;
     }
     
     @Override

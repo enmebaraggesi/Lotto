@@ -1,5 +1,7 @@
 package com.lotto.domain.resultannouncer;
 
+import com.lotto.domain.numberreceiver.NumberReceiverFacade;
+import com.lotto.domain.numberreceiver.dto.TicketDto;
 import com.lotto.domain.resultannouncer.dto.ResponseDto;
 import com.lotto.domain.resultannouncer.dto.ResultAnnouncerResponseDto;
 import com.lotto.domain.resultchecker.ResultCheckerFacade;
@@ -23,6 +25,7 @@ import static org.mockito.Mockito.when;
 class ResultAnnouncerFacadeTest {
     
     ResponseRepository responseRepository = new ResponseRepositoryTestImpl();
+    NumberReceiverFacade numberReceiverFacade = mock(NumberReceiverFacade.class);
     ResultCheckerFacade resultCheckerFacade = mock(ResultCheckerFacade.class);
     
     @Test
@@ -30,7 +33,13 @@ class ResultAnnouncerFacadeTest {
         //given
         LocalDateTime drawDate = LocalDateTime.of(2022, 12, 17, 12, 0, 0);
         String id = "123";
-        ResultAnnouncerFacade facade = new ResultAnnouncerConfiguration().resultAnnouncerFacade(resultCheckerFacade, responseRepository, Clock.systemUTC());
+        ResultAnnouncerFacade facade = new ResultAnnouncerConfiguration().resultAnnouncerFacade(resultCheckerFacade, numberReceiverFacade, responseRepository, Clock.systemUTC());
+        TicketDto ticketDto = TicketDto.builder()
+                                       .ticketId(id)
+                                       .numbersFromUser(Set.of(1, 2, 3, 4, 5, 6))
+                                       .drawDate(drawDate)
+                                       .build();
+        when(numberReceiverFacade.findById(id)).thenReturn(ticketDto);
         ResultDto resultDto = ResultDto.builder()
                                        .id(id)
                                        .numbers(Set.of(1, 2, 3, 4, 5, 6))
@@ -58,7 +67,13 @@ class ResultAnnouncerFacadeTest {
         //given
         LocalDateTime drawDate = LocalDateTime.of(2022, 12, 17, 12, 0, 0);
         String id = "123";
-        ResultAnnouncerFacade facade = new ResultAnnouncerConfiguration().resultAnnouncerFacade(resultCheckerFacade, responseRepository, Clock.systemUTC());
+        ResultAnnouncerFacade facade = new ResultAnnouncerConfiguration().resultAnnouncerFacade(resultCheckerFacade, numberReceiverFacade, responseRepository, Clock.systemUTC());
+        TicketDto ticketDto = TicketDto.builder()
+                                       .ticketId(id)
+                                       .numbersFromUser(Set.of(1, 2, 3, 4, 5, 6))
+                                       .drawDate(drawDate)
+                                       .build();
+        when(numberReceiverFacade.findById(id)).thenReturn(ticketDto);
         ResultDto resultDto = ResultDto.builder()
                                        .id(id)
                                        .numbers(Set.of(1, 2, 3, 4, 5, 6))
@@ -87,26 +102,17 @@ class ResultAnnouncerFacadeTest {
         LocalDateTime drawDate = LocalDateTime.of(2022, 12, 31, 12, 0, 0);
         String id = "123";
         Clock clock = Clock.fixed(LocalDateTime.of(2022, 12, 17, 12, 0, 0).toInstant(ZoneOffset.UTC), ZoneId.systemDefault());
-        ResultAnnouncerFacade facade = new ResultAnnouncerConfiguration().resultAnnouncerFacade(resultCheckerFacade, responseRepository, clock);
-        ResultDto resultDto = ResultDto.builder()
-                                       .id(id)
-                                       .numbers(Set.of(1, 2, 3, 4, 5, 6))
-                                       .hitNumbers(Set.of(1, 2, 3, 4, 9, 0))
+        ResultAnnouncerFacade facade = new ResultAnnouncerConfiguration().resultAnnouncerFacade(resultCheckerFacade, numberReceiverFacade, responseRepository, clock);
+        TicketDto ticketDto = TicketDto.builder()
+                                       .ticketId(id)
+                                       .numbersFromUser(Set.of(1, 2, 3, 4, 5, 6))
                                        .drawDate(drawDate)
-                                       .isWinner(true)
                                        .build();
-        when(resultCheckerFacade.findById(id)).thenReturn(resultDto);
+        when(numberReceiverFacade.findById(id)).thenReturn(ticketDto);
         //when
         ResultAnnouncerResponseDto response = facade.checkResult(id);
         //then
-        ResponseDto responseDto = ResponseDto.builder()
-                                             .id("123")
-                                             .numbers(Set.of(1, 2, 3, 4, 5, 6))
-                                             .hitNumbers(Set.of(1, 2, 3, 4, 9, 0))
-                                             .drawDate(drawDate)
-                                             .isWinner(true)
-                                             .build();
-        ResultAnnouncerResponseDto expected = new ResultAnnouncerResponseDto(responseDto, WAIT_MESSAGE.message);
+        ResultAnnouncerResponseDto expected = new ResultAnnouncerResponseDto(ResponseDto.builder().build(), WAIT_MESSAGE.message);
         assertThat(response).isEqualTo(expected);
     }
     
@@ -115,6 +121,12 @@ class ResultAnnouncerFacadeTest {
         //given
         LocalDateTime drawDate = LocalDateTime.of(2022, 12, 17, 12, 0, 0);
         String id = "123";
+        TicketDto ticketDto = TicketDto.builder()
+                                       .ticketId(id)
+                                       .numbersFromUser(Set.of(1, 2, 3, 4, 5, 6))
+                                       .drawDate(drawDate)
+                                       .build();
+        when(numberReceiverFacade.findById(id)).thenReturn(ticketDto);
         ResultDto resultDto = ResultDto.builder()
                                        .id(id)
                                        .numbers(Set.of(1, 2, 3, 4, 5, 6))
@@ -123,7 +135,7 @@ class ResultAnnouncerFacadeTest {
                                        .isWinner(true)
                                        .build();
         when(resultCheckerFacade.findById(id)).thenReturn(resultDto);
-        ResultAnnouncerFacade facade = new ResultAnnouncerConfiguration().resultAnnouncerFacade(resultCheckerFacade, responseRepository, Clock.systemUTC());
+        ResultAnnouncerFacade facade = new ResultAnnouncerConfiguration().resultAnnouncerFacade(resultCheckerFacade, numberReceiverFacade, responseRepository, Clock.systemUTC());
         //when
         facade.checkResult(id);
         ResultAnnouncerResponseDto response = facade.checkResult(id);
